@@ -86,7 +86,6 @@ public class Application extends CloudSimEntity implements PowerAware<PowerModel
         return this;
     }
 
-
     public Application addProcessingTask(final Task task, double outgoingBitRate) {
         if (lastAddedOperator == null) {
             throw new IllegalStateException("Pipeline has no source task, call setSourceTask() first.");

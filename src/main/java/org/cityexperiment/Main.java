@@ -34,10 +34,12 @@ public class Main {
 
 	private Main() {
         long startTime = System.currentTimeMillis();
-
         String experimentName = determineExperimentName();
-        mkdir(RESULTS_PATH);
-        mkdir(RESULTS_PATH + "/" + experimentName);
+
+        if (RESULTS_PATH != null) {
+            mkdir(RESULTS_PATH);
+            mkdir(RESULTS_PATH + "/" + experimentName);
+        }
 
 		CloudSim simulation = new CloudSim();
         City city = new City(simulation, Settings.CITY_WIDTH, Settings.CITY_HEIGHT, Settings.STREETS_PER_AXIS);
@@ -65,9 +67,11 @@ public class Main {
         simulation.terminateAt(SIMULATION_TIME);
         simulation.start();
 
-        System.out.println("Writing results...");
-        CsvExporter.write(RESULTS_PATH + "/" + experimentName + "/infrastructure.csv", mm, List.of(cloud, fog, wifi, wan));
-        CsvExporter.write(RESULTS_PATH + "/" + experimentName + "/applications.csv", mm, List.of(cctvApp, stmApp));
+        if (RESULTS_PATH != null) {
+            System.out.println("Writing results...");
+            CsvExporter.write(RESULTS_PATH + "/" + experimentName + "/infrastructure.csv", mm, List.of(cloud, fog, wifi, wan));
+            CsvExporter.write(RESULTS_PATH + "/" + experimentName + "/applications.csv", mm, List.of(cctvApp, stmApp));
+        }
 
         System.out.println("Experiment " + experimentName + " finished!");
         System.out.println();
