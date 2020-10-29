@@ -18,12 +18,12 @@ public class DataFlow extends DefaultEdge {
         return bitRate;
     }
 
-    public Vm getSourceVm() {
-        return (Vm) getSource();
+    public Task getSourceTask() {
+        return (Task) getSource();
     }
 
-    public Vm getTargetVm()
+    public Task getTargetTask()
     {
-        return (Vm) getTarget();
+        return (Task) getTarget();
     }
 }

@@ -5,7 +5,7 @@ import org.cityexperiment.infrastructure.DatacenterCloud;
 import org.cityexperiment.infrastructure.TrafficLightSystem;
 import org.leaf.application.Application;
 import org.leaf.application.Task;
-import org.leaf.application.TaskFactory;
+import org.leaf.infrastructure.ComputeNode;
 
 import java.util.List;
 
@@ -25,21 +25,21 @@ public class CCTVApplicationFactory {
         DatacenterCloud cloud = clouds.get(0);
 
         return new Application(trafficLightSystem.getSimulation())
-            .addSourceTask(sourceTask(), trafficLightSystem, CCTV_TO_PROCESSOR_BIT_RATE)
+            .addSourceTask(sourceTask(trafficLightSystem), CCTV_TO_PROCESSOR_BIT_RATE)
             .addProcessingTask(processingTask(), IMAGE_ANALYSIS_TO_STORAGE_BIT_RATE)
-            .addSinkTask(sinkTask(), cloud);
+            .addSinkTask(sinkTask(cloud));
     }
 
-    private static Task sourceTask() {
-        return TaskFactory.createTask(CCTV_OPERATOR_MIPS);
+    private static Task sourceTask(TrafficLightSystem trafficLightSystem) {
+        return new Task(CCTV_OPERATOR_MIPS, trafficLightSystem);
     }
 
     private static Task processingTask() {
-        return TaskFactory.createTask(IMAGE_ANALYSIS_OPERATOR_MIPS);
+        return new Task(IMAGE_ANALYSIS_OPERATOR_MIPS);
     }
 
-    private static Task sinkTask() {
-        return TaskFactory.createTask(STORAGE_OPERATOR_MIPS);
+    private static Task sinkTask(ComputeNode cloud) {
+        return new Task(IMAGE_ANALYSIS_OPERATOR_MIPS, cloud);
     }
 
 }

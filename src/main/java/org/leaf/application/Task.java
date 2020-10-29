@@ -1,25 +1,45 @@
 package org.leaf.application;
 
 import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cloudbus.cloudsim.schedulers.cloudlet.CloudletScheduler;
-import org.cloudbus.cloudsim.vms.VmSimple;
+import org.cloudbus.cloudsim.hosts.Host;
+import org.leaf.infrastructure.ComputeNode;
 
 /**
  * Task of an Application
  */
-public class Task extends VmSimple {
+public class Task {
 
-    Datacenter boundDatacenter = Datacenter.NULL;
+    long requestedMips = 0;
+    ComputeNode computeNode = ComputeNode.NULL;
+    boolean bound = false;
 
-    public Task(long id, long mipsCapacity, long numberOfPes) {
-        super(id, mipsCapacity, numberOfPes);
+    public Task(long requestedMips) {
+        this.requestedMips = requestedMips;
     }
 
-    public Datacenter getBoundDatacenter() {
-        return boundDatacenter;
+    public Task(long requestedMips, ComputeNode boundComputeNode) {
+        this.requestedMips = requestedMips;
+        this.computeNode = boundComputeNode;
+        this.bound = true;
     }
 
-    public void setBoundDatacenter(Datacenter boundDatacenter) {
-        this.boundDatacenter = boundDatacenter;
+    public long getRequestedMips() {
+        return requestedMips;
+    }
+
+    public void setComputeNode(ComputeNode computeNode) {
+        this.computeNode = computeNode;
+    }
+
+    public ComputeNode getComputeNode() {
+        return computeNode;
+    }
+
+    public Host getHost() {
+        return computeNode.getHostList().stream().findFirst().orElse(Host.NULL);
+    }
+
+    public boolean isBound() {
+        return bound;
     }
 }

@@ -6,9 +6,12 @@ import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
-import org.cloudbus.cloudsim.vms.Vm;
-import org.leaf.placement.DatacenterBrokerLeaf;
+import org.leaf.application.Application;
+import org.leaf.infrastructure.ComputeNode;
+import org.leaf.placement.Orchestrator;
 import org.leaf.application.Task;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.Comparator;
 import java.util.List;
@@ -19,13 +22,23 @@ import static org.cityexperiment.Settings.*;
 /**
  * DatacenterBroker for the city experiments.
  */
-public class DatacenterBrokerCity extends DatacenterBrokerLeaf {
+public class OrchestratorCity extends Orchestrator {
+    private static final Logger LOGGER = LoggerFactory.getLogger(OrchestratorCity.class.getSimpleName());
 
-    Datacenter cloudDc;
+    ComputeNode cloudDc;
 
-    public DatacenterBrokerCity(CloudSim simulation, Datacenter cloudDc) {
-        super(simulation, "Broker");
+    public OrchestratorCity(CloudSim simulation, ComputeNode cloudDc) {
+        super(simulation);
         this.cloudDc = cloudDc;
+    }
+
+    @Override
+    public void placeApplication(Application application) {
+        for (Task task : application.getTasks()) {
+            if (!task.isBound()) {
+                task.setComputeNode(determinePlacement(task));
+            }
+        }
     }
 
     /**
@@ -38,15 +51,9 @@ public class DatacenterBrokerCity extends DatacenterBrokerLeaf {
      *
      * If there are no fog nodes or if all are utilized more than FOG_UTILIZATION_THRESHOLD, processing tasks are placed in the cloud.
      */
-    @Override
-    protected Datacenter defaultDatacenterMapper(Datacenter lastDatacenter, Vm vm) {
-        if (!(vm instanceof Task)) {
-            throw new RuntimeException(this.getClass().getName() + " can only operate on VMs of type 'ApplicationOperator'.");
-        }
-
-        Task task = (Task) vm;
-        if (task.getBoundDatacenter() != Datacenter.NULL) {
-            return task.getBoundDatacenter();
+    protected ComputeNode determinePlacement(Task task) {
+        if (task.isBound()) {
+            return task.getComputeNode();
         }
 
         InfrastructureGraphCity networkTopology = (InfrastructureGraphCity) getSimulation().getNetworkTopology();
@@ -67,12 +74,12 @@ public class DatacenterBrokerCity extends DatacenterBrokerLeaf {
         if (optionalHost.isPresent()) {
             Host host = optionalHost.get();
             if (host.getCpuPercentUtilization() < FOG_UTILIZATION_THRESHOLD) {
-                return optionalHost.get().getDatacenter();
+                return (ComputeNode) optionalHost.get().getDatacenter();
             } else {
-                LOGGER.warn("All fog nodes running at >{} capacity. Placing {} in the cloud.", FOG_UTILIZATION_THRESHOLD, vm);
+                LOGGER.warn("All fog nodes running at >{} capacity. Placing {} in the cloud.", FOG_UTILIZATION_THRESHOLD, task);
             }
         } else {
-            LOGGER.info("No fog nodes available. Placing {} in the cloud.", vm);
+            LOGGER.info("No fog nodes available. Placing {} in the cloud.", task);
         }
         return cloudDc;
 
@@ -110,5 +117,4 @@ public class DatacenterBrokerCity extends DatacenterBrokerLeaf {
             }
         });
     }
-
 }

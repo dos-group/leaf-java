@@ -2,6 +2,7 @@ package org.leaf.infrastructure;
 
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.network.topologies.NetworkTopology;
+import org.cloudbus.cloudsim.network.topologies.TopologicalGraph;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.alg.shortestpath.FloydWarshallShortestPaths;

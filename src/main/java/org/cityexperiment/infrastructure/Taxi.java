@@ -6,7 +6,7 @@ import org.cityexperiment.mobility.MobilityModelTaxi;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.power.models.PowerModelHost;
-import org.leaf.placement.DatacenterBrokerLeaf;
+import org.leaf.placement.Orchestrator;
 import org.leaf.application.Application;
 import org.leaf.infrastructure.ComputeNode;
 import org.leaf.host.HostFactory;
@@ -16,6 +16,7 @@ import java.util.List;
 import static org.cityexperiment.Settings.CAR_MIPS;
 import static org.cityexperiment.Settings.CAR_WATT_PER_MIPS;
 import static org.leaf.LeafTags.START_APPLICATION;
+import static org.leaf.LeafTags.STOP_APPLICATION;
 
 /**
  * A taxi which features a mobility model and hosts a STM application.
@@ -26,12 +27,12 @@ public class Taxi extends ComputeNode {
 
     private double startTime;
     private MobilityModelTaxi mobilityModel;
-    private DatacenterBrokerLeaf broker;
+    private Orchestrator broker;
 
     Application application = Application.NULL;
 
-    public Taxi(Simulation simulation, MobilityModelTaxi mobilityModel, DatacenterBrokerLeaf broker) {
         super(simulation, List.of(HostFactory.createHost(CAR_MIPS, new PowerModelHost(CAR_WATT_PER_MIPS))));
+    public Taxi(Simulation simulation, MobilityModelTaxi mobilityModel, Orchestrator broker) {
         this.startTime = getSimulation().clock();
         this.mobilityModel = mobilityModel;
         this.broker = broker;
@@ -58,7 +59,7 @@ public class Taxi extends ComputeNode {
     @Override
     public void shutdownEntity() {
         if (application != null) {
-            broker.stopApplication(application);
+            schedule(application, 0, STOP_APPLICATION);
         }
         schedule(SHUTDOWN);
     }

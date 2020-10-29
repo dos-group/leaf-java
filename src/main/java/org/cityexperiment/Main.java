@@ -10,7 +10,6 @@ import org.cityexperiment.visualization.Visualizer;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.power.PowerMeter;
 import org.cloudsimplus.util.Log;
-import org.leaf.application.TaskFactory;
 import org.leaf.host.HostFactory;
 
 import java.io.File;
@@ -78,7 +77,6 @@ public class Main {
         System.out.println("Simulated time: " + SIMULATION_TIME + "s");
         System.out.println("Real time:      " + ((System.currentTimeMillis() - startTime) / 1000) + "s");
         System.out.println("PMs created:    " + HostFactory.createdEntities());
-        System.out.println("VMs created:    " + TaskFactory.createdEntities());
 	}
 
     private static String determineExperimentName() {

@@ -1,12 +1,12 @@
 package org.cityexperiment.city;
 
-import org.cityexperiment.placement.DatacenterBrokerCity;
+import org.cityexperiment.placement.OrchestratorCity;
 import org.cityexperiment.infrastructure.DatacenterCloud;
 import org.cityexperiment.infrastructure.DatacenterFog;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cityexperiment.infrastructure.TrafficLightSystem;
-import org.leaf.placement.DatacenterBrokerLeaf;
+import org.leaf.placement.Orchestrator;
 import org.leaf.location.Location;
 import org.cityexperiment.infrastructure.InfrastructureGraphCity;
 import org.jgrapht.Graph;
@@ -29,7 +29,7 @@ public class City {
     private int streetsPerAxis;
 
     private DatacenterCloud cloudDc;
-    private DatacenterBrokerLeaf broker;
+    private Orchestrator broker;
     private Graph<Location, Street> streetGraph;
     private InfrastructureGraphCity networkTopology;
 
@@ -42,7 +42,7 @@ public class City {
         this.streetsPerAxis = streetsPerAxis;
 
         this.cloudDc = new DatacenterCloud(simulation);
-        this.broker = new DatacenterBrokerCity(simulation, this.cloudDc);
+        this.broker = new OrchestratorCity(simulation, this.cloudDc);
         this.streetGraph = initStreetGraph();
         this.networkTopology = initInfrastructureGraph(simulation);
     }
@@ -139,7 +139,7 @@ public class City {
         return networkTopology;
     }
 
-    public DatacenterBrokerLeaf getBroker() {
+    public Orchestrator getBroker() {
         return broker;
     }
 

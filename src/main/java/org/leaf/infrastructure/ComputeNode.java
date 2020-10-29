@@ -2,6 +2,7 @@ package org.leaf.infrastructure;
 
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicy;
 import org.cloudbus.cloudsim.allocationpolicies.VmAllocationPolicySimple;
+import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
@@ -11,6 +12,7 @@ import org.leaf.host.HostLeaf;
 import org.leaf.location.Location;
 import org.leaf.location.LocationAware;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static org.leaf.LeafTags.SHUTDOWN_FOG_NODE;
@@ -19,6 +21,12 @@ import static org.leaf.LeafTags.SHUTDOWN_FOG_NODE;
  * Location-aware data center which can optionally shut down its hosts if they are not utilized any more
  */
 public class ComputeNode extends DatacenterSimple implements LocationAware {
+
+    /**
+     * A property that implements the Null Object Design Pattern for {@link NetworkLink}
+     * objects.
+     */
+    public static ComputeNode NULL = new ComputeNode(Simulation.NULL, new ArrayList<>()) {};
 
     private Location location = Location.NULL;
 

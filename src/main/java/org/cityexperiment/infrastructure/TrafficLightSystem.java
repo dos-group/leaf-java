@@ -4,7 +4,7 @@ import org.cityexperiment.application.CCTVApplicationFactory;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.power.models.PowerModelHost;
-import org.leaf.placement.DatacenterBrokerLeaf;
+import org.leaf.placement.Orchestrator;
 import org.leaf.application.Application;
 import org.leaf.infrastructure.ComputeNode;
 import org.leaf.host.HostFactory;
@@ -21,12 +21,12 @@ import static org.leaf.LeafTags.START_APPLICATION;
 public class TrafficLightSystem extends ComputeNode {
 
     private Location location;
-    private DatacenterBrokerLeaf broker;
+    private Orchestrator broker;
 
     Application application = Application.NULL;
 
-    public TrafficLightSystem(Simulation simulation, Location location, DatacenterBrokerLeaf broker) {
         super(simulation, List.of(HostFactory.createHost(TLS_MIPS, new PowerModelHost(TLS_WATT_PER_MIPS))));
+    public TrafficLightSystem(Simulation simulation, Location location, Orchestrator broker) {
         this.location = location;
         this.broker = broker;
     }

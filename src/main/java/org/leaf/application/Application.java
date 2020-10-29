@@ -4,11 +4,11 @@ import org.cloudbus.cloudsim.core.CloudSimEntity;
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.core.events.SimEvent;
-import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.power.PowerAware;
 import org.cloudbus.cloudsim.power.models.*;
-import org.cloudbus.cloudsim.vms.Vm;
 import org.leaf.host.HostLeaf;
+import org.leaf.infrastructure.ComputeNode;
 import org.leaf.infrastructure.NetworkLink;
 import org.leaf.infrastructure.InfrastructureGraph;
 import org.jgrapht.GraphPath;
@@ -27,7 +27,7 @@ import static org.leaf.LeafTags.*;
 /**
  * LEAF Application
  *
- * A collection of VMs connected by a directed graph.
+ * A collection of tasks connected by a directed graph.
  */
 public class Application extends CloudSimEntity implements PowerAware<PowerModelApplication> {
     private static final Logger LOGGER = LoggerFactory.getLogger(Application.class.getSimpleName());
@@ -35,7 +35,7 @@ public class Application extends CloudSimEntity implements PowerAware<PowerModel
     public static Application NULL = new Application(Simulation.NULL);
 
     private DefaultDirectedGraph<Task, DataFlow> graph = new DefaultDirectedGraph<>(DataFlow.class);
-    private Task lastAddedOperator;
+    private Task lastAddedTask;
     private double lastOutgoingBitRate;
     private boolean running = false;
 
@@ -57,7 +57,7 @@ public class Application extends CloudSimEntity implements PowerAware<PowerModel
     public void processEvent(SimEvent evt) {
         if (evt.getTag() == START_APPLICATION) {
             if (getSimulation().clock() > SIMULATION_TIME) return;
-            checkVmsPlaced();
+            checkTasksPlaced();
             reserveNetwork();
             reserveCpu();
             running = true;
@@ -74,69 +74,67 @@ public class Application extends CloudSimEntity implements PowerAware<PowerModel
         }
     }
 
-    public Application addSourceTask(final Task task, Datacenter boundDatacenter, double outgoingBitRate) {
-        if (lastAddedOperator != null) {
+    public Application addSourceTask(final Task task, double outgoingBitRate) {
+        if (lastAddedTask != null) {
             throw new IllegalStateException("Pipeline already has a source. " + graph);
         }
-        task.setBoundDatacenter(boundDatacenter);
         graph.addVertex(task);
-        lastAddedOperator = task;
+        lastAddedTask = task;
         lastOutgoingBitRate = outgoingBitRate;
 
         return this;
     }
 
     public Application addProcessingTask(final Task task, double outgoingBitRate) {
-        if (lastAddedOperator == null) {
+        if (lastAddedTask == null) {
             throw new IllegalStateException("Pipeline has no source task, call setSourceTask() first.");
         }
         graph.addVertex(task);
-        graph.addEdge(lastAddedOperator, task, new DataFlow(lastOutgoingBitRate));
-        lastAddedOperator = task;
+        graph.addEdge(lastAddedTask, task, new DataFlow(lastOutgoingBitRate));
+        lastAddedTask = task;
         lastOutgoingBitRate = outgoingBitRate;
 
         return this;
     }
 
-    public Application addSinkTask(final Task task, Datacenter boundDatacenter) {
-        if (lastAddedOperator == null) {
+    public Application addSinkTask(final Task task) {
+        if (lastAddedTask == null) {
             throw new IllegalStateException("Pipeline has no source task, call setSourceTask() first.");
         }
-        task.setBoundDatacenter(boundDatacenter);
         graph.addVertex(task);
-        graph.addEdge(lastAddedOperator, task, new DataFlow(lastOutgoingBitRate));
+        graph.addEdge(lastAddedTask, task, new DataFlow(lastOutgoingBitRate));
         return this;
     }
 
-    public List<Vm> getVms() {
+    public List<Task> getTasks() {
         return new ArrayList<>(graph.vertexSet());
     }
 
     /**
      * Checks whether all VMs related to the tasks have been placed on the infrastructure
      */
-    private void checkVmsPlaced() {
-        List<Vm> unplacedVms = graph.vertexSet().stream().filter(vm -> vm.getHost() == Host.NULL).collect(Collectors.toList());
-        if (!unplacedVms.isEmpty()) {
-            throw new IllegalStateException("Cannot start pipeline as not all VMs have been placed on a host. The following VMs have not been placed: " + unplacedVms);
+    private void checkTasksPlaced() {
+        List<Task> unplacedTasks = graph.vertexSet().stream().filter(task -> task.getHost() == Host.NULL).collect(Collectors.toList());
+        if (!unplacedTasks.isEmpty()) {
+            throw new IllegalStateException("Cannot start pipeline as not all tasks have been placed on a host. The following tasks have not been placed: " + unplacedTasks);
         }
     }
 
     /**
-     * Finds the shortest path between two VMs on the infrastructure
+     * Finds the shortest path between two tasks on the infrastructure
      */
-    private GraphPath<SimEntity, NetworkLink> findNetworkPath(Vm srcVm, Vm dstVm) {
+    private GraphPath<SimEntity, NetworkLink> findNetworkPath(Task srcTask, Task dstTask) {
         InfrastructureGraph network = (InfrastructureGraph) this.getSimulation().getNetworkTopology();
-        GraphPath<SimEntity, NetworkLink> path = network.getPath(srcVm.getHost().getDatacenter(), dstVm.getHost().getDatacenter());
+        GraphPath<SimEntity, NetworkLink> path = network.getPath(srcTask.getHost().getDatacenter(), dstTask.getHost().getDatacenter());
         if (path == null) {
-            throw new RuntimeException("Could not find a path between " + srcVm + " and " + dstVm);
+            throw new RuntimeException("Could not find a path between " + srcTask + " and " + dstTask);
         }
         return path;
     }
 
     private void reserveNetwork() {
         for (DataFlow dataFlow : graph.edgeSet()) {
-            GraphPath<SimEntity, NetworkLink> path = findNetworkPath(dataFlow.getSourceVm(), dataFlow.getTargetVm());
+            GraphPath<SimEntity, NetworkLink> path = findNetworkPath(dataFlow.getSourceTask(), dataFlow.getTargetTask());
             for (NetworkLink networkLink : path.getEdgeList()) {
                 if (dataFlow.getBitRate() == 0) continue;
                 if (networkLink.reserveBandwidth(dataFlow.getBitRate())) {
@@ -163,9 +161,9 @@ public class Application extends CloudSimEntity implements PowerAware<PowerModel
     }
 
     private void reserveCpu() {
-        for (Vm vm : graph.vertexSet()) {
-            HostLeaf host = (HostLeaf) vm.getHost();
-            double requestedMips = vm.getCurrentRequestedTotalMips();
+        for (Task task : graph.vertexSet()) {
+            HostLeaf host = (HostLeaf) task.getHost();
+            double requestedMips = task.getRequestedMips();
             if (requestedMips == 0) continue;
             if (host.reserveMips(requestedMips)) {
                 reservedCpuMap.computeIfPresent(host, (k, v) -> v + requestedMips);
