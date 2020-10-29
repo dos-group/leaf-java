@@ -1,6 +1,6 @@
 package org.leaf.power;
 
-import org.cloudbus.cloudsim.power.models.PowerMeasurement;
+import org.cloudbus.cloudsim.power.PowerMeasurement;
 import org.cloudbus.cloudsim.power.models.PowerModel;
 import org.leaf.infrastructure.NetworkLink;
 
@@ -10,7 +10,7 @@ import org.leaf.infrastructure.NetworkLink;
 public class PowerModelNetworkLink implements PowerModel {
 
     public static PowerModelNetworkLink NULL = new PowerModelNetworkLink(0) {
-        @Override public PowerMeasurement measure() { return new PowerMeasurement(); }
+        @Override public PowerMeasurement getPowerMeasurement() { return new PowerMeasurement(); }
     };
 
     private double energyPerBit;
@@ -30,7 +30,7 @@ public class PowerModelNetworkLink implements PowerModel {
     }
 
     @Override
-    public PowerMeasurement measure() {
+    public PowerMeasurement getPowerMeasurement() {
         return new PowerMeasurement(0, energyPerBit * getLink().getUsedBandwidth());
     }
 

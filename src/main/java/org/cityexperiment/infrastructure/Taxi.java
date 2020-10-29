@@ -1,6 +1,7 @@
 package org.cityexperiment.infrastructure;
 
 import org.cityexperiment.application.STMApplicationFactory;
+import org.cloudbus.cloudsim.power.models.PowerModelHostSimple;
 import org.leaf.location.Location;
 import org.cityexperiment.mobility.MobilityModelTaxi;
 import org.cloudbus.cloudsim.core.Simulation;
@@ -31,8 +32,8 @@ public class Taxi extends ComputeNode {
 
     Application application = Application.NULL;
 
-        super(simulation, List.of(HostFactory.createHost(CAR_MIPS, new PowerModelHost(CAR_WATT_PER_MIPS))));
     public Taxi(Simulation simulation, MobilityModelTaxi mobilityModel, Orchestrator broker) {
+        super(simulation, List.of(HostFactory.createHost(CAR_MIPS, PowerModelHost.NULL)));
         this.startTime = getSimulation().clock();
         this.mobilityModel = mobilityModel;
         this.broker = broker;

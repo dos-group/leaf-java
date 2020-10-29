@@ -1,6 +1,6 @@
 package org.cityexperiment.visualization;
 
-import org.cloudbus.cloudsim.power.models.PowerMeasurement;
+import org.cloudbus.cloudsim.power.PowerMeasurement;
 import org.cloudbus.cloudsim.power.PowerMeter;
 import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYChartBuilder;

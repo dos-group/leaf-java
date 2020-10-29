@@ -2,9 +2,9 @@ package org.leaf.power;
 
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
+import org.cloudbus.cloudsim.power.PowerMeasurement;
 import org.leaf.infrastructure.ComputeNode;
 import org.leaf.location.Location;
-import org.cloudbus.cloudsim.power.models.PowerMeasurement;
 
 /**
  * Power model for WiFi network links that takes distance between sender and receiver into account.
@@ -21,7 +21,7 @@ public class PowerModelNetworkLinkWifi extends PowerModelNetworkLink {
     }
 
     @Override
-    public PowerMeasurement measure() {
+    public PowerMeasurement getPowerMeasurement() {
         return computePowerUsage(getLink().getUsedBandwidth());
     }
 

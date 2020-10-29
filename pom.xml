@@ -39,7 +39,7 @@
             <artifactId>cloudsim-plus</artifactId>
             <version>5.4.0-leaf</version>
             <scope>system</scope>
-            <systemPath>${project.basedir}/src/main/resources/cloudsim-plus-5.4.0-leaf.jar</systemPath>
+            <systemPath>${project.basedir}/src/main/resources/cloudsim-plus-5.5.1.jar</systemPath>
         </dependency>
 
         <dependency>

@@ -25,8 +25,8 @@ public class TrafficLightSystem extends ComputeNode {
 
     Application application = Application.NULL;
 
-        super(simulation, List.of(HostFactory.createHost(TLS_MIPS, new PowerModelHost(TLS_WATT_PER_MIPS))));
     public TrafficLightSystem(Simulation simulation, Location location, Orchestrator broker) {
+        super(simulation, List.of(HostFactory.createHost(TLS_MIPS, PowerModelHost.NULL)));
         this.location = location;
         this.broker = broker;
     }

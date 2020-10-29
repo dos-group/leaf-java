@@ -1,8 +1,8 @@
 package org.cityexperiment.infrastructure;
 
+import org.cloudbus.cloudsim.power.models.PowerModelHostSimple;
 import org.leaf.location.Location;
 import org.cloudbus.cloudsim.core.Simulation;
-import org.cloudbus.cloudsim.power.models.PowerModelHost;
 import org.leaf.infrastructure.ComputeNode;
 import org.leaf.host.HostFactory;
 
@@ -19,7 +19,7 @@ public class DatacenterFog extends ComputeNode {
 
     public DatacenterFog(Simulation simulation, Location location, int shutdownDeadline) {
         super(simulation, List.of(HostFactory.createHost(FOG_MIPS,
-            new PowerModelHost(FOG_STATIC_POWER, FOG_MAX_POWER), shutdownDeadline)));
+            new PowerModelHostSimple(FOG_MAX_POWER, FOG_STATIC_POWER), shutdownDeadline)));
         this.location = location;
     }
 
