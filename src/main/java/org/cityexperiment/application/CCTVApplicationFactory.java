@@ -39,7 +39,7 @@ public class CCTVApplicationFactory {
     }
 
     private static Task sinkTask(ComputeNode cloud) {
-        return new Task(IMAGE_ANALYSIS_OPERATOR_MIPS, cloud);
+        return new Task(STORAGE_OPERATOR_MIPS, cloud);
     }
 
 }

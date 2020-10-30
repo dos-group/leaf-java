@@ -23,7 +23,7 @@ import static org.leaf.LeafTags.SHUTDOWN_FOG_NODE;
 public class ComputeNode extends DatacenterSimple implements LocationAware {
 
     /**
-     * A property that implements the Null Object Design Pattern for {@link NetworkLink}
+     * A property that implements the Null Object Design Pattern for {@link ComputeNode}
      * objects.
      */
     public static ComputeNode NULL = new ComputeNode(Simulation.NULL, new ArrayList<>()) {};
@@ -41,21 +41,22 @@ public class ComputeNode extends DatacenterSimple implements LocationAware {
     @Override
     public void processEvent(final SimEvent evt) {
         if (evt.getTag() == SHUTDOWN_FOG_NODE) {
-            ((HostLeaf) evt.getData()).tryToShutDown();
+            Host host = (HostLeaf) evt.getData();
+            if(host.getCpuMipsUtilization() == 0){
+                host.setActive(false);
+            } else {
+                LOGGER.debug("Cannot power off {}. There are still {} MIPS reserved.", this, host.getCpuMipsUtilization());
+            }
         }
         super.processEvent(evt);
     }
 
-    @Override
-    protected void processVmDestroy(final SimEvent evt, final boolean ack) {
-        super.processVmDestroy(evt, ack);
-
-        // If the host has a shutdown deadline defined, the data center will try to power it off
-        // This may fail if there were new VMs placed on the host in the meantime.
-        final Host host = ((Vm) evt.getData()).getHost();
-        if (host.getIdleShutdownDeadline() > 0) {
-            schedule(host.getIdleShutdownDeadline(), SHUTDOWN_FOG_NODE, host);
-        }
+    /**
+     * TODO
+     * @param host
+     */
+    public void tryToShutDown(final Host host) {
+        schedule(host.getIdleShutdownDeadline(), SHUTDOWN_FOG_NODE, host);
     }
 
     @Override
