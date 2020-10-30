@@ -17,10 +17,8 @@ public class LeafTags {
 
     public static final int START_APPLICATION = BASE + 1;
     public static final int STOP_APPLICATION = BASE + 2;
-    public static final int SCHEDULE_APPLICATION_START = BASE + 3;
-    public static final int SCHEDULE_APPLICATION_END = BASE + 4;
-    public static final int UPDATE_NETWORK = BASE + 6;
-    public static final int SHUTDOWN_FOG_NODE = BASE + 7;
+    public static final int UPDATE_NETWORK_TOPOLOGY = BASE + 3;
+    public static final int SHUTDOWN_FOG_NODE = BASE + 4;
 
     /**
      * Private constructor to avoid class instantiation.

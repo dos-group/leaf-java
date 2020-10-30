@@ -6,9 +6,7 @@ import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.power.PowerAware;
-import org.cloudbus.cloudsim.power.models.*;
 import org.leaf.host.HostLeaf;
-import org.leaf.infrastructure.ComputeNode;
 import org.leaf.infrastructure.NetworkLink;
 import org.leaf.infrastructure.InfrastructureGraph;
 import org.jgrapht.GraphPath;
@@ -61,11 +59,11 @@ public class Application extends CloudSimEntity implements PowerAware<PowerModel
             reserveNetwork();
             reserveCpu();
             running = true;
-        } else if (evt.getTag() == UPDATE_NETWORK) {
+        } else if (evt.getTag() == UPDATE_NETWORK_TOPOLOGY) {
             if (getSimulation().clock() > SIMULATION_TIME) return;
             releaseNetwork();
             reserveNetwork();
-            if (running) schedule(WIFI_REALLOCATION_INTERVAL, UPDATE_NETWORK);
+            if (running) schedule(WIFI_REALLOCATION_INTERVAL, UPDATE_NETWORK_TOPOLOGY);
         } else if (evt.getTag() == STOP_APPLICATION) {
             releaseNetwork();
             releaseCpu();

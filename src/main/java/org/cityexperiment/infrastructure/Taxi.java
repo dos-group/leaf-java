@@ -42,7 +42,7 @@ public class Taxi extends ComputeNode {
     @Override
     protected void startEntity() {
         scheduleNow(this, START_APPLICATION);
-        super.startEntity();
+        // Don't call super.startEntity(), the DATACENTER_REGISTRATION_REQUEST event will cause a memory leak
     }
 
     @Override

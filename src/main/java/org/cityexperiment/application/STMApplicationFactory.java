@@ -13,7 +13,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.cityexperiment.Settings.*;
-import static org.leaf.LeafTags.UPDATE_NETWORK;
+import static org.leaf.LeafTags.UPDATE_NETWORK_TOPOLOGY;
 
 /**
  * Factory class for constructing STM Applications.
@@ -28,7 +28,7 @@ public class STMApplicationFactory {
         for (TrafficLightSystem tls : getTrafficLightSystemsOnPath(taxi)) {
             application.addSinkTask(sinkTask(tls));
         }
-        application.schedule(UPDATE_NETWORK);
+        application.schedule(UPDATE_NETWORK_TOPOLOGY);
         return application;
     }
 

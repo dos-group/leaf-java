@@ -34,7 +34,7 @@ public class TrafficLightSystem extends ComputeNode {
     @Override
     protected void startEntity() {
         schedule(this, RANDOM.nextDouble(), START_APPLICATION);
-        super.startEntity();
+        // Don't call super.startEntity(), the DATACENTER_REGISTRATION_REQUEST event will cause a memory leak
     }
 
     @Override

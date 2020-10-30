@@ -1,5 +1,6 @@
 package org.cityexperiment.mobility;
 
+import ch.qos.logback.core.net.SyslogOutputStream;
 import org.cityexperiment.city.Street;
 import org.leaf.location.Location;
 import org.jgrapht.GraphPath;
@@ -14,8 +15,8 @@ import java.util.*;
 public class MobilityModelTaxi {
     private static final Logger LOGGER = LoggerFactory.getLogger(MobilityModelTaxi.class.getSimpleName());
 
-    private GraphPath<Location, Street> path;
-    private SortedMap<Long, Location> timeLocationMap = new TreeMap<>();
+    private final GraphPath<Location, Street> path;
+    private final SortedMap<Integer, Location> timeLocationMap = new TreeMap<>();
     private double endTime;
 
     public MobilityModelTaxi(GraphPath<Location, Street> path, double speed, double interval) {
@@ -72,8 +73,8 @@ public class MobilityModelTaxi {
         return fractions;
     }
 
-    private long timeToMapKey(double time) {
-        return Math.round(time * 100);
+    private int timeToMapKey(double time) {
+        return (int) Math.round(time * 100) / 100;
     }
 
     public GraphPath<Location, Street> getPath() {

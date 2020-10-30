@@ -20,7 +20,7 @@ import java.util.List;
 
 import static org.cityexperiment.CityTags.*;
 import static org.cityexperiment.Settings.*;
-import static org.leaf.LeafTags.UPDATE_NETWORK;
+import static org.leaf.LeafTags.UPDATE_NETWORK_TOPOLOGY;
 
 public class MobilityManager extends CloudSimEntity {
 
@@ -46,7 +46,7 @@ public class MobilityManager extends CloudSimEntity {
     @Override
     protected void startEntity() {
         schedule(TIME_STEP_INTERVAL, CREATE_CARS);
-        schedule(WIFI_REALLOCATION_INTERVAL, UPDATE_NETWORK);
+        schedule(WIFI_REALLOCATION_INTERVAL, UPDATE_NETWORK_TOPOLOGY);
         schedule(POWER_MEASUREMENT_INTERVAL, COUNT_CARS);
     }
 
@@ -64,10 +64,10 @@ public class MobilityManager extends CloudSimEntity {
             Taxi taxi = (Taxi) evt.getData();
             topology.removeCar(taxi);
             taxi.shutdownEntity();
-        } else if (evt.getTag() == UPDATE_NETWORK) {
+        } else if (evt.getTag() == UPDATE_NETWORK_TOPOLOGY) {
             InfrastructureGraphCity network = (InfrastructureGraphCity) this.getSimulation().getNetworkTopology();
             network.update();
-            schedule(WIFI_REALLOCATION_INTERVAL, UPDATE_NETWORK);
+            schedule(WIFI_REALLOCATION_INTERVAL, UPDATE_NETWORK_TOPOLOGY);
         } else if (evt.getTag() == COUNT_CARS) {
             taxiCountHistory.add(getCars().size());
             schedule(POWER_MEASUREMENT_INTERVAL, COUNT_CARS);
