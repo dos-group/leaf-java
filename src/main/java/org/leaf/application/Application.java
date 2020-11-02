@@ -7,9 +7,9 @@ import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.cloudbus.cloudsim.power.PowerAware;
 import org.jgrapht.GraphPath;
+import org.jgrapht.graph.DirectedAcyclicGraph;
 import org.leaf.host.HostLeaf;
 import org.leaf.infrastructure.InfrastructureGraph;
-import org.jgrapht.graph.DefaultDirectedGraph;
 import org.leaf.infrastructure.NetworkLink;
 import org.leaf.power.PowerModelApplication;
 import org.slf4j.Logger;
@@ -35,7 +35,7 @@ public class Application extends CloudSimEntity implements PowerAware<PowerModel
 
     public static Application NULL = new Application(Simulation.NULL);
 
-    private DefaultDirectedGraph<Task, DataFlow> graph = new DefaultDirectedGraph<>(DataFlow.class);
+    private DirectedAcyclicGraph<Task, DataFlow> graph = new DirectedAcyclicGraph<>(DataFlow.class);
     private Task lastAddedTask;
     private double lastOutgoingBitRate;
     private boolean running = false;
@@ -201,7 +201,7 @@ public class Application extends CloudSimEntity implements PowerAware<PowerModel
         return running;
     }
 
-    public DefaultDirectedGraph<Task, DataFlow> getGraph() {
+    public DirectedAcyclicGraph<Task, DataFlow> getGraph() {
         return graph;
     }
 
