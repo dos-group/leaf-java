@@ -5,7 +5,7 @@ import org.cloudbus.cloudsim.network.topologies.NetworkTopology;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.alg.shortestpath.FloydWarshallShortestPaths;
-import org.jgrapht.graph.SimpleWeightedGraph;
+import org.jgrapht.graph.DirectedWeightedMultigraph;
 
 /**
  * Infrastructure topology connecting compute nodes with network links in a weighted graph.
@@ -14,10 +14,10 @@ import org.jgrapht.graph.SimpleWeightedGraph;
  */
 public class InfrastructureGraph implements NetworkTopology {
 
-    private SimpleWeightedGraph<SimEntity, NetworkLink> graph;
+    private DirectedWeightedMultigraph<SimEntity, NetworkLink> graph;
 
     public InfrastructureGraph() {
-        graph = new SimpleWeightedGraph<>(NetworkLink.class);
+        graph = new DirectedWeightedMultigraph<>(NetworkLink.class);
     }
 
     public void addLink(NetworkLink networkLink) {
@@ -56,7 +56,7 @@ public class InfrastructureGraph implements NetworkTopology {
         return algorithm.getPath(src, dest);
     }
 
-    public SimpleWeightedGraph<SimEntity, NetworkLink> getGraph() {
+    public DirectedWeightedMultigraph<SimEntity, NetworkLink> getGraph() {
         return graph;
     }
 

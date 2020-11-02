@@ -34,6 +34,7 @@ public class InfrastructureGraphCity extends InfrastructureGraph {
         for (TrafficLightSystem _tls : getTlsInRange(fogDc)) {
             if (fogDc.getLocation().equals(_tls.getLocation())) {
                 addLink(new NetworkLinkEthernet(fogDc, _tls));
+                addLink(new NetworkLinkEthernet(_tls, fogDc));
             }
         }
     }
@@ -58,9 +59,11 @@ public class InfrastructureGraphCity extends InfrastructureGraph {
         getGraph().addVertex(tls);
         for (DatacenterCloud dc : getCloudDcs()) {
             addLink(new NetworkLinkWan(tls, dc));
+            addLink(new NetworkLinkWan(dc, tls));
         }
         for (TrafficLightSystem _tls : getTlsInRange(tls)) {
             addLink(new NetworkLinkWifiApToAp(tls, _tls));
+            addLink(new NetworkLinkWifiApToAp(_tls, tls));
         }
     }
 
