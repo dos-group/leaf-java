@@ -4,15 +4,16 @@ import org.cityexperiment.application.CCTVApplicationFactory;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.power.models.PowerModelHost;
-import org.leaf.placement.Orchestrator;
 import org.leaf.application.Application;
-import org.leaf.infrastructure.ComputeNode;
 import org.leaf.host.HostFactory;
+import org.leaf.infrastructure.ComputeNode;
 import org.leaf.location.Location;
+import org.leaf.placement.Orchestrator;
 
 import java.util.List;
 
-import static org.cityexperiment.Settings.*;
+import static org.cityexperiment.Settings.RANDOM;
+import static org.cityexperiment.Settings.TLS_MIPS;
 import static org.leaf.LeafTags.START_APPLICATION;
 
 /**

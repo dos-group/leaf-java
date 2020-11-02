@@ -1,22 +1,17 @@
 package org.cityexperiment.infrastructure;
 
-import org.cityexperiment.infrastructure.*;
-import org.cityexperiment.infrastructure.DatacenterCloud;
-import org.cityexperiment.infrastructure.DatacenterFog;
 import org.cloudbus.cloudsim.core.CloudSimEntity;
 import org.cloudbus.cloudsim.core.SimEntity;
-import org.cityexperiment.infrastructure.Taxi;
-import org.cityexperiment.infrastructure.TrafficLightSystem;
 import org.leaf.infrastructure.ComputeNode;
-import org.leaf.infrastructure.NetworkLink;
 import org.leaf.infrastructure.InfrastructureGraph;
+import org.leaf.infrastructure.NetworkLink;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import static org.cityexperiment.Settings.*;
+import static org.cityexperiment.Settings.WIFI_RANGE;
 
 /**
  * Infrastructure graph that allows adding cloud and fog data centers, traffic light systems and taxis
@@ -29,10 +24,6 @@ public class InfrastructureGraphCity extends InfrastructureGraph {
      */
     public void addCloudDc(DatacenterCloud cloudDc) {
         getGraph().addVertex(cloudDc);
-        for (DatacenterCloud dc : getCloudDcs()) {
-            if (cloudDc == dc) continue;
-            addLink(new NetworkLinkWan(cloudDc, dc));
-        }
     }
 
     /**

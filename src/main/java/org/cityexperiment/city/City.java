@@ -1,16 +1,16 @@
 package org.cityexperiment.city;
 
-import org.cityexperiment.placement.OrchestratorCity;
 import org.cityexperiment.infrastructure.DatacenterCloud;
 import org.cityexperiment.infrastructure.DatacenterFog;
+import org.cityexperiment.infrastructure.InfrastructureGraphCity;
+import org.cityexperiment.infrastructure.TrafficLightSystem;
+import org.cityexperiment.placement.OrchestratorCity;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.datacenters.Datacenter;
-import org.cityexperiment.infrastructure.TrafficLightSystem;
-import org.leaf.placement.Orchestrator;
-import org.leaf.location.Location;
-import org.cityexperiment.infrastructure.InfrastructureGraphCity;
 import org.jgrapht.Graph;
 import org.jgrapht.graph.SimpleGraph;
+import org.leaf.location.Location;
+import org.leaf.placement.Orchestrator;
 
 import java.util.ArrayList;
 import java.util.Collections;

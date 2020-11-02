@@ -1,10 +1,10 @@
 package org.cityexperiment.infrastructure;
 
-import org.cloudbus.cloudsim.power.models.PowerModelHostSimple;
-import org.leaf.location.Location;
 import org.cloudbus.cloudsim.core.Simulation;
-import org.leaf.infrastructure.ComputeNode;
+import org.cloudbus.cloudsim.power.models.PowerModelHostSimple;
 import org.leaf.host.HostFactory;
+import org.leaf.infrastructure.ComputeNode;
+import org.leaf.location.Location;
 
 import java.util.List;
 

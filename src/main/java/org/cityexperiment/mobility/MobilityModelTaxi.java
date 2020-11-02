@@ -1,13 +1,15 @@
 package org.cityexperiment.mobility;
 
-import ch.qos.logback.core.net.SyslogOutputStream;
 import org.cityexperiment.city.Street;
-import org.leaf.location.Location;
 import org.jgrapht.GraphPath;
+import org.leaf.location.Location;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * Manages the location a taxi the city.

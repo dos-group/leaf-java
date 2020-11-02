@@ -1,6 +1,5 @@
 package org.leaf.application;
 
-import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.leaf.infrastructure.ComputeNode;
 

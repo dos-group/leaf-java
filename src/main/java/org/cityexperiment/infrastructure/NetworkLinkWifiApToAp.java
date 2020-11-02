@@ -3,7 +3,7 @@ package org.cityexperiment.infrastructure;
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.leaf.power.PowerModelNetworkLink;
 
-import static org.cityexperiment.Settings.*;
+import static org.cityexperiment.Settings.WIFI_AP_TO_AP_WATT_PER_BIT;
 
 /**
  * A WiFi network link between two access points.

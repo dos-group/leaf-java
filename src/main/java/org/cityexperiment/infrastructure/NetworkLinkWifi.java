@@ -3,7 +3,8 @@ package org.cityexperiment.infrastructure;
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.leaf.infrastructure.NetworkLink;
 
-import static org.cityexperiment.Settings.*;
+import static org.cityexperiment.Settings.WIFI_BANDWIDTH;
+import static org.cityexperiment.Settings.WIFI_LATENCY;
 
 /**
  * A WiFi network link.

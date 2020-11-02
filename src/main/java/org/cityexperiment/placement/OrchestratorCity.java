@@ -3,13 +3,12 @@ package org.cityexperiment.placement;
 import org.cityexperiment.infrastructure.DatacenterFog;
 import org.cityexperiment.infrastructure.InfrastructureGraphCity;
 import org.cloudbus.cloudsim.core.CloudSim;
-import org.cloudbus.cloudsim.datacenters.Datacenter;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.leaf.application.Application;
+import org.leaf.application.Task;
 import org.leaf.infrastructure.ComputeNode;
 import org.leaf.placement.Orchestrator;
-import org.leaf.application.Task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,7 +16,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Optional;
 
-import static org.cityexperiment.Settings.*;
+import static org.cityexperiment.Settings.FOG_SHUTDOWN_DEADLINE;
+import static org.cityexperiment.Settings.FOG_UTILIZATION_THRESHOLD;
 
 /**
  * DatacenterBroker for the city experiments.

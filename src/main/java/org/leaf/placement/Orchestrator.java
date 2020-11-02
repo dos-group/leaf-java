@@ -1,17 +1,11 @@
 package org.leaf.placement;
 
-import org.cloudbus.cloudsim.brokers.DatacenterBrokerAbstract;
-import org.cloudbus.cloudsim.cloudlets.Cloudlet;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimEntity;
-import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.events.SimEvent;
-import org.cloudbus.cloudsim.vms.Vm;
 import org.leaf.application.Application;
 
-import java.util.List;
-
-import static org.leaf.LeafTags.*;
+import static org.leaf.LeafTags.START_APPLICATION;
 
 /**
  * DatacenterBroker for the LEAF infrastructure and application model.

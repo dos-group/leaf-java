@@ -1,10 +1,10 @@
 package org.cityexperiment.mobility;
 
 import org.apache.commons.math3.distribution.PoissonDistribution;
-import org.cityexperiment.infrastructure.InfrastructureGraphCity;
 import org.cityexperiment.Settings;
 import org.cityexperiment.city.City;
 import org.cityexperiment.city.Street;
+import org.cityexperiment.infrastructure.InfrastructureGraphCity;
 import org.cityexperiment.infrastructure.Taxi;
 import org.cloudbus.cloudsim.core.CloudSim;
 import org.cloudbus.cloudsim.core.CloudSimEntity;

@@ -1,8 +1,8 @@
 package org.cityexperiment.infrastructure;
 
 import org.cloudbus.cloudsim.core.SimEntity;
-import org.leaf.power.PowerModelNetworkLink;
 import org.leaf.infrastructure.NetworkLink;
+import org.leaf.power.PowerModelNetworkLink;
 
 import static org.cityexperiment.Settings.*;
 

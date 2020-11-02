@@ -1,14 +1,15 @@
 package org.cityexperiment.infrastructure;
 
-import org.leaf.location.Location;
 import org.cloudbus.cloudsim.core.Simulation;
-import org.leaf.infrastructure.ComputeNode;
 import org.leaf.host.HostFactory;
+import org.leaf.infrastructure.ComputeNode;
+import org.leaf.location.Location;
 import org.leaf.power.PowerModelHostShared;
 
 import java.util.List;
 
-import static org.cityexperiment.Settings.*;
+import static org.cityexperiment.Settings.CLOUD_MIPS;
+import static org.cityexperiment.Settings.CLOUD_WATT_PER_MIPS;
 
 /**
  * A cloud data center.

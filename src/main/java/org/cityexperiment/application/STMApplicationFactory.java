@@ -1,11 +1,11 @@
 package org.cityexperiment.application;
 
 import org.cityexperiment.infrastructure.InfrastructureGraphCity;
-import org.leaf.location.Location;
 import org.cityexperiment.infrastructure.Taxi;
 import org.cityexperiment.infrastructure.TrafficLightSystem;
 import org.leaf.application.Application;
 import org.leaf.application.Task;
+import org.leaf.location.Location;
 
 import java.util.HashSet;
 import java.util.List;

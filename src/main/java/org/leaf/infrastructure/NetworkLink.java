@@ -2,8 +2,8 @@ package org.leaf.infrastructure;
 
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.cloudbus.cloudsim.power.PowerAware;
-import org.leaf.power.PowerModelNetworkLink;
 import org.jgrapht.graph.DefaultWeightedEdge;
+import org.leaf.power.PowerModelNetworkLink;
 
 import static java.lang.String.format;
 import static java.util.Objects.requireNonNull;

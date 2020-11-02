@@ -1,21 +1,19 @@
 package org.cityexperiment.infrastructure;
 
 import org.cityexperiment.application.STMApplicationFactory;
-import org.cloudbus.cloudsim.power.models.PowerModelHostSimple;
-import org.leaf.location.Location;
 import org.cityexperiment.mobility.MobilityModelTaxi;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.power.models.PowerModelHost;
-import org.leaf.placement.Orchestrator;
 import org.leaf.application.Application;
-import org.leaf.infrastructure.ComputeNode;
 import org.leaf.host.HostFactory;
+import org.leaf.infrastructure.ComputeNode;
+import org.leaf.location.Location;
+import org.leaf.placement.Orchestrator;
 
 import java.util.List;
 
 import static org.cityexperiment.Settings.CAR_MIPS;
-import static org.cityexperiment.Settings.CAR_WATT_PER_MIPS;
 import static org.leaf.LeafTags.START_APPLICATION;
 import static org.leaf.LeafTags.STOP_APPLICATION;
 

@@ -3,9 +3,7 @@ package org.cityexperiment.infrastructure;
 import org.cloudbus.cloudsim.core.SimEntity;
 import org.leaf.power.PowerModelNetworkLink;
 
-import static java.lang.String.format;
-import static java.util.Objects.requireNonNull;
-import static org.cityexperiment.Settings.*;
+import static org.cityexperiment.Settings.WIFI_CAR_TO_AP_WATT_PER_BIT;
 
 /**
  * A WiFi network link between a taxi and an access point.

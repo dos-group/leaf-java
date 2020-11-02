@@ -2,16 +2,16 @@ package org.cityexperiment.visualization;
 
 import org.cityexperiment.city.City;
 import org.cityexperiment.city.Street;
-import org.cityexperiment.infrastructure.Taxi;
-import org.leaf.location.Location;
-import org.cityexperiment.mobility.MobilityManager;
 import org.cityexperiment.infrastructure.DatacenterFog;
+import org.cityexperiment.infrastructure.Taxi;
+import org.cityexperiment.mobility.MobilityManager;
 import org.cloudbus.cloudsim.hosts.Host;
 import org.knowm.xchart.XYChart;
 import org.knowm.xchart.XYChartBuilder;
 import org.knowm.xchart.XYSeries;
 import org.knowm.xchart.style.Styler;
 import org.knowm.xchart.style.markers.SeriesMarkers;
+import org.leaf.location.Location;
 
 import java.awt.*;
 import java.util.List;

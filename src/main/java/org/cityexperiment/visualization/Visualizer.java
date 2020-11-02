@@ -1,5 +1,7 @@
 package org.cityexperiment.visualization;
 
+import org.cityexperiment.city.City;
+import org.cityexperiment.mobility.MobilityManager;
 import org.cloudbus.cloudsim.core.CloudSimEntity;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.Simulation;
@@ -7,8 +9,6 @@ import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.power.PowerMeter;
 import org.knowm.xchart.SwingWrapper;
 import org.knowm.xchart.XYChart;
-import org.cityexperiment.city.City;
-import org.cityexperiment.mobility.MobilityManager;
 
 import javax.swing.*;
 import java.util.ArrayList;

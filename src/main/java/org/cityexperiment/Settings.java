@@ -1,9 +1,10 @@
 package org.cityexperiment;
 
+import ch.qos.logback.classic.Level;
+
 import java.util.Arrays;
 import java.util.List;
 import java.util.Random;
-import ch.qos.logback.classic.Level;
 
 public class Settings {
     public static final int SEED = 42;

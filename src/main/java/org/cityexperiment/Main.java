@@ -2,9 +2,9 @@ package org.cityexperiment;
 
 import org.cityexperiment.city.City;
 import org.cityexperiment.infrastructure.InfrastructureGraphCity;
-import org.cityexperiment.mobility.MobilityManager;
 import org.cityexperiment.infrastructure.Taxi;
 import org.cityexperiment.infrastructure.TrafficLightSystem;
+import org.cityexperiment.mobility.MobilityManager;
 import org.cityexperiment.util.CsvExporter;
 import org.cityexperiment.visualization.Visualizer;
 import org.cloudbus.cloudsim.core.CloudSim;

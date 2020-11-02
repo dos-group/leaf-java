@@ -2,8 +2,8 @@ package org.cityexperiment.util;
 
 import de.siegmar.fastcsv.writer.CsvWriter;
 import org.cityexperiment.mobility.MobilityManager;
-import org.cloudbus.cloudsim.power.PowerMeter;
 import org.cloudbus.cloudsim.power.PowerMeasurement;
+import org.cloudbus.cloudsim.power.PowerMeter;
 
 import java.io.File;
 import java.io.IOException;
