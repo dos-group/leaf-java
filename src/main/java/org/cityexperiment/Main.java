@@ -48,19 +48,21 @@ public class Main {
         PowerMeter cloud = new PowerMeter(simulation, city.getCloudDc()).setName("cloud");
         PowerMeter fog = new PowerMeter(simulation, nt.getFogDcs()).setName("fog");
         PowerMeter wifi = new PowerMeter(simulation, nt::getWifiLinks).setName("wifi");
-        PowerMeter wan = new PowerMeter(simulation, nt::getWanLinks).setName("wan");
+        PowerMeter wanUp = new PowerMeter(simulation, nt::getWanUpLinks).setName("wanUp");
+        PowerMeter wanDown = new PowerMeter(simulation, nt::getWanDownLinks).setName("wanDown");
         PowerMeter cctvApp = new PowerMeter(simulation, () -> nt.getTraficLightSystems().stream().map(TrafficLightSystem::getApplication).collect(toList())).setName("cctv");
         PowerMeter stmApp = new PowerMeter(simulation, () -> nt.getTaxis().stream().map(Taxi::getApplication).collect(toList())).setName("stm");
 
         cloud.setMeasurementInterval(POWER_MEASUREMENT_INTERVAL);
         fog.setMeasurementInterval(POWER_MEASUREMENT_INTERVAL);
         wifi.setMeasurementInterval(POWER_MEASUREMENT_INTERVAL);
-        wan.setMeasurementInterval(POWER_MEASUREMENT_INTERVAL);
+        wanUp.setMeasurementInterval(POWER_MEASUREMENT_INTERVAL);
+        wanDown.setMeasurementInterval(POWER_MEASUREMENT_INTERVAL);
         cctvApp.setMeasurementInterval(POWER_MEASUREMENT_INTERVAL);
         stmApp.setMeasurementInterval(POWER_MEASUREMENT_INTERVAL);
 
         if (VISUALIZATION_REDRAW_INTERVAL > 0) {
-            new Visualizer(experimentName, simulation, city, mm, List.of(cloud, fog, wifi, wan), List.of(cctvApp, stmApp), TIME_STEP_INTERVAL, SIMULATION_TIME);
+            new Visualizer(experimentName, simulation, city, mm, List.of(cloud, fog, wifi, wanUp, wanDown), List.of(cctvApp, stmApp), TIME_STEP_INTERVAL, SIMULATION_TIME);
         }
 
         simulation.terminateAt(SIMULATION_TIME);
@@ -68,7 +70,7 @@ public class Main {
 
         if (RESULTS_PATH != null) {
             System.out.println("Writing results...");
-            CsvExporter.write(RESULTS_PATH + "/" + experimentName + "/infrastructure.csv", mm, List.of(cloud, fog, wifi, wan));
+            CsvExporter.write(RESULTS_PATH + "/" + experimentName + "/infrastructure.csv", mm, List.of(cloud, fog, wifi, wanUp, wanDown));
             CsvExporter.write(RESULTS_PATH + "/" + experimentName + "/applications.csv", mm, List.of(cctvApp, stmApp));
         }
 

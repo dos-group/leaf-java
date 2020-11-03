@@ -58,8 +58,8 @@ public class InfrastructureGraphCity extends InfrastructureGraph {
     public void addTrafficLightSystem(TrafficLightSystem tls) {
         getGraph().addVertex(tls);
         for (DatacenterCloud dc : getCloudDcs()) {
-            addLink(new NetworkLinkWan(tls, dc));
-            addLink(new NetworkLinkWan(dc, tls));
+            addLink(new NetworkLinkWanUp(tls, dc));
+            addLink(new NetworkLinkWanDown(dc, tls));
         }
         for (TrafficLightSystem _tls : getTlsInRange(tls)) {
             addLink(new NetworkLinkWifiApToAp(tls, _tls));
@@ -114,8 +114,12 @@ public class InfrastructureGraphCity extends InfrastructureGraph {
         return getEdgeByType(NetworkLinkWifi.class);
     }
 
-    public List<NetworkLinkWan> getWanLinks() {
-        return getEdgeByType(NetworkLinkWan.class);
+    public List<NetworkLinkWanUp> getWanUpLinks() {
+        return getEdgeByType(NetworkLinkWanUp.class);
+    }
+
+    public List<NetworkLinkWanDown> getWanDownLinks() {
+        return getEdgeByType(NetworkLinkWanDown.class);
     }
 
     private <T extends SimEntity> List<T> getVertexByType(Class<T> x) {
