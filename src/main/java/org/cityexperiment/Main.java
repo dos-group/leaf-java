@@ -32,13 +32,7 @@ public class Main {
 	}
 
 	private Main() {
-        /*runExperiment(0);
-        runExperiment(1);
-        runExperiment(2);
-        runExperiment(3);
-        runExperiment(4);
-        runExperiment(5);*/
-        runExperiment(6);
+        runExperiment(FOG_DCS);
     }
 
     private void runExperiment(int numFogDcs) {
