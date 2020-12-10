@@ -12,73 +12,116 @@ import warnings
 from typing import Tuple, Dict, List
 
 import pandas as pd
+import numpy as np
+import plotly.graph_objs as go
+from scipy import signal
 
-from figures import infrastructure_figure, applications_figure, cctv_application_figure, \
-    stm_application_figure, comparison_plot_figure, infrastructure_barplot_figure
-from settings import RESULTS_DIR, EXPERIMENTS, EXPERIMENT_TITLES
-
-
-def _create_plots(df_i, df_a, path):
-    tuples = [
-        (infrastructure_figure(df_i), "infrastructure"),
-        (applications_figure(df_a), "applications"),
-        (cctv_application_figure(df_a), "application_cctv"),
-        (stm_application_figure(df_a), "application_stm"),
-    ]
-    for fig, filename in tuples:
-        fig.write_image(os.path.join(path, filename + ".pdf"))
+from figures import subplot_figure, barplot_figure, timeline_figure, single_experiment_figure
+from settings import SOURCE_DIR, RESULTS_DIR, EXPERIMENTS, EXPERIMENT_TITLES, COLORS
 
 
-def experiment_results() -> Dict[str, Tuple[pd.DataFrame, pd.DataFrame]]:
-    result = {}
+ExperimentResults = Dict[str, Tuple[pd.DataFrame, pd.DataFrame]]
+
+
+def load_experiment_results() -> ExperimentResults:
+    results = {}
     for experiment in EXPERIMENTS:
-        df_i = pd.read_csv(os.path.join(RESULTS_DIR, experiment, "infrastructure.csv"), index_col="time")
-        df_a = pd.read_csv(os.path.join(RESULTS_DIR, experiment, "applications.csv"), index_col="time")
-        result[experiment] = (df_i, df_a)
-    return result
+        df_i = pd.read_csv(os.path.join(SOURCE_DIR, experiment, "infrastructure.csv"), index_col="time")
+        df_a = pd.read_csv(os.path.join(SOURCE_DIR, experiment, "applications.csv"), index_col="time")
+        results[experiment] = (df_i, df_a)
+    return results
 
 
-def create_barplot(results):
-    print("Creating barplot...")
-    infrastructure_barplot_figure(results).write_image(os.path.join(RESULTS_DIR, "barplot.pdf"))
+def create_comparison_plot(results: ExperimentResults, name: str = None):
+    fig = timeline_figure()
+    for result, (df, _) in results.items():
+        experiment_name = EXPERIMENT_TITLES[EXPERIMENTS.index(result)]
+        series = df.drop(columns="taxis").sum(axis=1)
+        fig.add_trace(go.Scatter(x=series.index, y=signal.savgol_filter(series, 3601, 3), name=experiment_name, line=dict(width=1)))
+    fig.write_image(os.path.join(RESULTS_DIR, name))
 
 
-def print_experiment_table(results):
-    print("Experiment Results:\n")
-    print(f"{''.ljust(17)}Total\tCloud\tFog (d)\tFog (s)\tWAN\tWiFI")
-    print("-" * 70)
-    for experiment, (df_i, _) in results.items():
-        cloud = df_i["cloud dynamic"].sum() / 3600
-        fog_dynamic = df_i["fog dynamic"].sum() / 3600
-        fog_static = df_i["fog static"].sum() / 3600
-        wifi = df_i["wifi dynamic"].sum() / 3600
-        wan = df_i["wan dynamic"].sum() / 3600
-        total = cloud+fog_dynamic+fog_static+wifi+wan
-        print(f"{experiment.ljust(17)}{int(total)}\t{int(cloud)}\t{int(fog_dynamic)}\t{int(fog_static)}\t{int(wan)}\t{int(wifi)}")
-    print()
+def create_barplot(results: ExperimentResults):
+    cloud = []
+    fog_static = []
+    fog_dynamic = []
+    wifi = []
+    wan = []
+    for _, (df, _) in results.items():
+        cloud.append(df["cloud dynamic"].sum() / 3600000)
+        fog_static.append(df["fog static"].sum() / 3600000)
+        fog_dynamic.append(df["fog dynamic"].sum() / 3600000)
+        wifi.append(df["wifi dynamic"].sum() / 3600000)
+        wan.append((df["wanUp dynamic"].sum() + df["wanDown dynamic"].sum()) / 3600000)
+    total = list(np.array(cloud) + np.array(fog_static) + np.array(fog_dynamic) + np.array(wifi) + np.array(wan))
+
+    fig = barplot_figure()
+    fig.add_trace(go.Bar(name='Fog static', x=EXPERIMENT_TITLES, y=fog_static, marker_color=COLORS["fog_static"]))
+    fig.add_trace(go.Bar(name='Fog dynamic', x=EXPERIMENT_TITLES, y=fog_dynamic, marker_color=COLORS["fog"]))
+    fig.add_trace(go.Bar(name='Cloud', x=EXPERIMENT_TITLES, y=cloud, marker_color=COLORS["cloud"]))
+    fig.add_trace(go.Bar(name='WiFi', x=EXPERIMENT_TITLES, y=wifi, marker_color=COLORS["wifi"]))
+    fig.add_trace(go.Bar(name='WAN', x=EXPERIMENT_TITLES, y=wan, marker_color=COLORS["wan"],
+                         text=total, texttemplate='%{text:.2f}', textposition='outside'))
+    fig.write_image(os.path.join(RESULTS_DIR, "barplot.pdf"))
 
 
-def create_experiment_plots(results):
-    for experiment, (df_i, df_a) in results.items():
-        print(f"Generating plots for experiment {experiment}...")
-        plots_dir = os.path.join(RESULTS_DIR, experiment, "plots")
-        os.makedirs(plots_dir, exist_ok=True)
-        _create_plots(df_i, df_a, path=plots_dir)
+def create_infrastructure_subplot(results: ExperimentResults):
+    fig = subplot_figure()
+    for i, (_, (df, _)) in enumerate(results.items(), 1):
+        fig.add_trace(go.Scatter(x=df.index, y=df["cloud dynamic"], name="Cloud", line=dict(width=1, color=COLORS["cloud"]), showlegend=(i == 1)), row=1, col=i)
+        fig.add_trace(go.Scatter(x=df.index, y=df["fog static"] + df["fog dynamic"], name="Fog", line=dict(width=1, color=COLORS["fog"]), showlegend=(i == 1)), row=1, col=i)
+        fig.add_trace(go.Scatter(x=df.index, y=df["fog static"], name="Fog static", line=dict(width=1, dash="1px,2px", color=COLORS["fog"]), showlegend=(i == 1)), row=1, col=i)
+        fig.add_trace(go.Scatter(x=df.index, y=df["wanUp dynamic"]+df["wanDown dynamic"], name="WAN (up+down)", line=dict(width=1, color=COLORS["wan"]), showlegend=(i == 1)), row=1, col=i)
+        fig.add_trace(go.Scatter(x=df.index, y=df["wifi dynamic"], name="WiFi", line=dict(width=1, color=COLORS["wifi"]), showlegend=(i == 1)), row=1, col=i)
+    fig.write_image(os.path.join(RESULTS_DIR, "infrastructure.pdf"))
 
 
-def create_comparison_plot(results, experiments_to_compare: List[str]):
-    print(f"Creating comparision plot between {' and '.join(experiments_to_compare)}...")
-    comparison_dfs = {EXPERIMENT_TITLES[EXPERIMENTS.index(experiment)]: results[experiment][0]
-                      for experiment in results
-                      if experiment in experiments_to_compare}
-    comparison_plot_figure(comparison_dfs).write_image(os.path.join(RESULTS_DIR, "fog4_vs_fog6s.pdf"))
+def create_applications_subplot(results: ExperimentResults):
+    fig = subplot_figure()
+    for i, (_, (_, df)) in enumerate(results.items(), 1):
+        fig.add_trace(go.Scatter(x=df.index, y=df["cctv static"] + df["cctv dynamic"], name="CCTV", line=dict(width=1, color=COLORS["cctv"]), showlegend=(i == 1)), row=1, col=i)
+        fig.add_trace(go.Scatter(x=df.index, y=df["stm static"] + df["stm dynamic"], name="STM", line=dict(width=1, color=COLORS["stm"]), showlegend=(i == 1)), row=1, col=i)
+    fig.write_image(os.path.join(RESULTS_DIR, "applications.pdf"))
+
+
+def create_infrastructure_plots(results: ExperimentResults):
+    for result, (df, _) in results.items():
+        fig = single_experiment_figure()
+        fig.add_trace(go.Scatter(x=df.index, y=df["cloud dynamic"], name="Cloud", line=dict(width=1, color=COLORS["cloud"])))
+        if (df["fog static"] + df["fog dynamic"]).sum() > 0:
+            fig.add_trace(go.Scatter(x=df.index, y=df["fog static"] + df["fog dynamic"], name="Fog", line=dict(width=1, color=COLORS["fog"])))
+            fig.add_trace(go.Scatter(x=df.index, y=df["fog static"], name="Fog static", line=dict(width=1, dash="dot", color=COLORS["fog"])))
+        fig.add_trace(go.Scatter(x=df.index, y=df["wanUp dynamic"] + df["wanDown dynamic"], name="WAN", line=dict(width=1, color=COLORS["wan"])))
+        fig.add_trace(go.Scatter(x=df.index, y=df["wifi dynamic"], name="WiFi", line=dict(width=1, color=COLORS["wifi"])))
+        os.makedirs(os.path.join(RESULTS_DIR, result), exist_ok=True)
+        fig.write_image(os.path.join(RESULTS_DIR, result, "infrastructure.pdf"))
+
+
+def create_applications_plots(results: ExperimentResults):
+    for result, (_, df) in results.items():
+        fig = single_experiment_figure()
+        fig.add_trace(go.Scatter(x=df.index, y=df["cctv static"] + df["cctv dynamic"], name="CCTV", line=dict(width=1, color=COLORS["cctv"])))
+        fig.add_trace(go.Scatter(x=df.index, y=df["stm static"] + df["stm dynamic"], name="STM", line=dict(width=1, color=COLORS["stm"])))
+        os.makedirs(os.path.join(RESULTS_DIR, result), exist_ok=True)
+        fig.write_image(os.path.join(RESULTS_DIR, result, "applications.pdf"))
+
+
+def _filter_results(results: ExperimentResults, experiment_names: List[str]) -> ExperimentResults:
+    return {k: v for k, v in results.items() if k in experiment_names}
 
 
 if __name__ == '__main__':
     warnings.filterwarnings("ignore")
-    results = experiment_results()
-    print_experiment_table(results)
+    results = load_experiment_results()
 
     create_barplot(results)
-    create_experiment_plots(results)
-    create_comparison_plot(results, ["fog_4", "fog_6_shutdown5"])
+    create_infrastructure_plots(results)
+    create_applications_plots(results)
+
+    subplot_results = _filter_results(results, ["cloud_only_0", "fog_4_0", "fog_6_shutdown5_0"])
+    create_infrastructure_subplot(subplot_results)
+    create_applications_subplot(subplot_results)
+
+    comparison_results = _filter_results(results, ["fog_4_0", "fog_6_shutdown5_0"])
+    create_comparison_plot(comparison_results, "fog4_vs_fog6s.pdf")
+    create_comparison_plot(results, "all.pdf")

@@ -3,6 +3,7 @@
 import os
 
 import pandas as pd
+import plotly.graph_objs as go
 
 from figures import taxi_figure
 from settings import RESULTS_DIR
@@ -47,11 +48,20 @@ def process_taxi_dataset(taxi_data_csv: str):
 if __name__ == '__main__':
     # To regenerate the distributions download the 2015 DEBS Grand Challenge dataset and reference it here
     # Otherwise a cached version of the distributions will be used
-    taxi_data_csv = None
+    TAXI_DATA_CSV = None
 
-    if taxi_data_csv is not None:
-        fig = taxi_figure(*process_taxi_dataset(taxi_data_csv))
+    if TAXI_DATA_CSV is not None:
+        taxi_count_distribution, taxi_speed_distribution = process_taxi_dataset(TAXI_DATA_CSV)
     else:
-        fig = taxi_figure(CACHED_TAXI_COUNT_DISTRIBUTION, CACHED_TAXI_SPEED_DISTRIBUTION)
+        taxi_count_distribution = CACHED_TAXI_COUNT_DISTRIBUTION
+        taxi_speed_distribution = CACHED_TAXI_SPEED_DISTRIBUTION
 
+    y_count = taxi_count_distribution * 50  # 50 corresponds to MAX_CARS_PER_MINUTE in the experiments
+    y_speed = taxi_speed_distribution * 3.6  # m/s to km/h
+
+    fig = taxi_figure()
+    fig.add_trace(go.Scatter(x=taxi_count_distribution.index * 60, y=y_count,
+                             name="Taxis generated per minute", line=dict(width=1)), secondary_y=False)
+    fig.add_trace(go.Scatter(x=taxi_count_distribution.index * 60, y=y_speed,
+                             name="Driving speed", line=dict(width=1)), secondary_y=True)
     fig.write_image(os.path.join(RESULTS_DIR, "taxis.pdf"))

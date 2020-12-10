@@ -1,4 +1,4 @@
-todoname: leaf
+name: leaf_analysis
 channels:
   - defaults
   - conda-forge
