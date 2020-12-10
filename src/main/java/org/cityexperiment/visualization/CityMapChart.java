@@ -91,13 +91,13 @@ public class CityMapChart extends Chart {
     }
 
     private void drawFogDcs(XYChart cityMapChart) {
-        for (DatacenterFog fogDc : city.getNetworkTopology().getFogDcs()) {
+        for (DatacenterFog fogDc : city.getInfrastructureGraph().getFogDcs()) {
             updateSeries(cityMapChart, fogDc.getName(), new double[] {fogDc.getLocation().getX()}, new double[] {fogDc.getLocation().getY()}, SeriesMarkers.CROSS, Color.BLUE);
         }
     }
 
     private void updateActiveFogDcs(XYChart cityMapChart) {
-        for (DatacenterFog fogDc : city.getNetworkTopology().getFogDcs()) {
+        for (DatacenterFog fogDc : city.getInfrastructureGraph().getFogDcs()) {
             XYSeries series = cityMapChart.getSeriesMap().get(fogDc.getName());
             if (fogDc.getHostList().stream().anyMatch(Host::isActive)) {
                 series.setMarker(SeriesMarkers.DIAMOND);

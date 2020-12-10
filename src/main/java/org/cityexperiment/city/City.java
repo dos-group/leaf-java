@@ -1,5 +1,7 @@
 package org.cityexperiment.city;
 
+import org.cityexperiment.application.CctvApplicationGenerator;
+import org.cityexperiment.application.StmApplicationGenerator;
 import org.cityexperiment.infrastructure.DatacenterCloud;
 import org.cityexperiment.infrastructure.DatacenterFog;
 import org.cityexperiment.infrastructure.InfrastructureGraphCity;
@@ -29,26 +31,34 @@ public class City {
     private int streetsPerAxis;
 
     private DatacenterCloud cloudDc;
-    private Orchestrator broker;
     private Graph<Location, Street> streetGraph;
-    private InfrastructureGraphCity networkTopology;
+    private InfrastructureGraphCity infrastructureGraph;
+
+    private Orchestrator orchestrator;
+
+    private CctvApplicationGenerator cctvApplicationGenerator;
+    private StmApplicationGenerator stmApplicationGenerator;
 
     private List<Location> gateLocations = new ArrayList<>();   // Gates are entry/exit points for taxis
     private List<Location> trafficLightLocations = new ArrayList<>();
 
-    public City(CloudSim simulation, double width, double height, int streetsPerAxis) {
+    public City(CloudSim simulation, double width, double height, int streetsPerAxis, int numFogDcs) {
         this.width = width;
         this.height = height;
         this.streetsPerAxis = streetsPerAxis;
+        this.streetGraph = createStreetGraph();
 
         this.cloudDc = new DatacenterCloud(simulation);
-        this.broker = new OrchestratorCity(simulation, this.cloudDc);
-        this.streetGraph = initStreetGraph();
-        this.networkTopology = initInfrastructureGraph(simulation);
+        this.infrastructureGraph = new InfrastructureGraphCity();
+        this.orchestrator = new OrchestratorCity(this.infrastructureGraph, this.cloudDc);
+        this.cctvApplicationGenerator = new CctvApplicationGenerator(this.orchestrator);
+        this.stmApplicationGenerator = new StmApplicationGenerator(this.orchestrator);
+
+        initInfrastructureGraph(simulation, numFogDcs);
     }
 
-    public InfrastructureGraphCity getNetworkTopology() {
-        return networkTopology;
+    public InfrastructureGraphCity getInfrastructureGraph() {
+        return infrastructureGraph;
     }
 
     public double getWidth() {
@@ -78,7 +88,7 @@ public class City {
     /**
      * Streets are implemented as graphs.
      */
-    private Graph<Location, Street> initStreetGraph() {
+    private Graph<Location, Street> createStreetGraph() {
         Graph<Location, Street> graph = new SimpleGraph<>(Street.class);
         final int N_POINTS = streetsPerAxis + 2;
         final double STEP_SIZE_X = width / (N_POINTS - 1);
@@ -119,28 +129,32 @@ public class City {
     /**
      * Initializes the network topology with a cloud and a number of traffic light systems and fog nodes.
      */
-    private InfrastructureGraphCity initInfrastructureGraph(CloudSim simulation) {
-        InfrastructureGraphCity networkTopology = new InfrastructureGraphCity();
-        simulation.setNetworkTopology(networkTopology);
-
-        networkTopology.addCloudDc(cloudDc);
+    private void initInfrastructureGraph(CloudSim simulation, int numFogDcs) {
+        simulation.setNetworkTopology(infrastructureGraph);
+        infrastructureGraph.addCloudDc(cloudDc);
 
         for (Location trafficLightLocation : trafficLightLocations) {
-            TrafficLightSystem tls = new TrafficLightSystem(simulation, trafficLightLocation, broker);
-            networkTopology.addTrafficLightSystem(tls);
+            TrafficLightSystem tls = new TrafficLightSystem(simulation, trafficLightLocation, cctvApplicationGenerator);
+            infrastructureGraph.addTrafficLightSystem(tls);
         }
 
         // On initialization Fog nodes are attached to random traffic lights
-        for (Location fogDcLocation : pickNRandomElements(trafficLightLocations, FOG_DCS)) {
+        for (Location fogDcLocation : pickNRandomElements(trafficLightLocations, numFogDcs)) {
             DatacenterFog fogDc = new DatacenterFog(simulation, fogDcLocation, FOG_SHUTDOWN_DEADLINE);
-            networkTopology.addFogDc(fogDc);
+            infrastructureGraph.addFogDc(fogDc);
         }
-
-        return networkTopology;
     }
 
-    public Orchestrator getBroker() {
-        return broker;
+    public Orchestrator getOrchestrator() {
+        return orchestrator;
+    }
+
+    public CctvApplicationGenerator getCctvApplicationGenerator() {
+        return cctvApplicationGenerator;
+    }
+
+    public StmApplicationGenerator getStmApplicationGenerator() {
+        return stmApplicationGenerator;
     }
 
     /**
@@ -153,5 +167,4 @@ public class City {
         }
         return list.subList(length - n, length);
     }
-
 }

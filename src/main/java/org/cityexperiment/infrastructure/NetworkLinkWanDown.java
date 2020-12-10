@@ -15,7 +15,7 @@ public class NetworkLinkWanDown extends NetworkLink {
         super(src, dst);
         setBandwidth(WAN_BANDWIDTH);
         setLatency(WAN_LATENCY);
-        setPowerModel(new PowerModelNetworkLink(WAN_WATT_PER_BIT));
+        setPowerModel(new PowerModelNetworkLink(WAN_WATT_PER_BIT_DOWN));
     }
 
 }

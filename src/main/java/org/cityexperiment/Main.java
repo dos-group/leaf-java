@@ -32,8 +32,18 @@ public class Main {
 	}
 
 	private Main() {
+        /*runExperiment(0);
+        runExperiment(1);
+        runExperiment(2);
+        runExperiment(3);
+        runExperiment(4);
+        runExperiment(5);*/
+        runExperiment(6);
+    }
+
+    private void runExperiment(int numFogDcs) {
         long startTime = System.currentTimeMillis();
-        String experimentName = determineExperimentName();
+        String experimentName = determineExperimentName(numFogDcs);
 
         if (RESULTS_PATH != null) {
             mkdir(RESULTS_PATH);
@@ -41,9 +51,9 @@ public class Main {
         }
 
 		CloudSim simulation = new CloudSim();
-        City city = new City(simulation, Settings.CITY_WIDTH, Settings.CITY_HEIGHT, Settings.STREETS_PER_AXIS);
+        City city = new City(simulation, CITY_WIDTH, CITY_HEIGHT, STREETS_PER_AXIS, numFogDcs);
         MobilityManager mm = new MobilityManager(simulation, city);
-        InfrastructureGraphCity nt = city.getNetworkTopology();
+        InfrastructureGraphCity nt = city.getInfrastructureGraph();
 
         PowerMeter cloud = new PowerMeter(simulation, city.getCloudDc()).setName("cloud");
         PowerMeter fog = new PowerMeter(simulation, nt.getFogDcs()).setName("fog");
@@ -68,6 +78,7 @@ public class Main {
         simulation.terminateAt(SIMULATION_TIME);
         simulation.start();
 
+
         if (RESULTS_PATH != null) {
             System.out.println("Writing results...");
             CsvExporter.write(RESULTS_PATH + "/" + experimentName + "/infrastructure.csv", mm, List.of(cloud, fog, wifi, wanUp, wanDown));
@@ -81,17 +92,17 @@ public class Main {
         System.out.println("PMs created:    " + HostFactory.createdEntities());
 	}
 
-    private static String determineExperimentName() {
+    private static String determineExperimentName(int numFogDcs) {
         String experimentName;
-        if (FOG_DCS <= 0) {
+        if (numFogDcs <= 0) {
             experimentName = "cloud_only";
         } else {
-            experimentName = "fog_" + FOG_DCS;
+            experimentName = "fog_" + numFogDcs;
             if (FOG_SHUTDOWN_DEADLINE > -1) {
                 experimentName += "_shutdown" + FOG_SHUTDOWN_DEADLINE;
             }
         }
-        return experimentName;
+        return experimentName + "_" + SEED;
     }
 
     private void mkdir(String dir) {

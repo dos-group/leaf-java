@@ -1,6 +1,6 @@
 package org.cityexperiment.infrastructure;
 
-import org.cityexperiment.application.STMApplicationFactory;
+import org.cityexperiment.application.StmApplicationGenerator;
 import org.cityexperiment.mobility.MobilityModelTaxi;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.core.events.SimEvent;
@@ -26,15 +26,15 @@ public class Taxi extends ComputeNode {
 
     private double startTime;
     private MobilityModelTaxi mobilityModel;
-    private Orchestrator broker;
+    private StmApplicationGenerator stmApplicationGenerator;
 
     Application application = Application.NULL;
 
-    public Taxi(Simulation simulation, MobilityModelTaxi mobilityModel, Orchestrator broker) {
+    public Taxi(Simulation simulation, MobilityModelTaxi mobilityModel, StmApplicationGenerator stmApplicationGenerator) {
         super(simulation, List.of(HostFactory.createHost(CAR_MIPS, PowerModelHost.NULL)));
         this.startTime = getSimulation().clock();
         this.mobilityModel = mobilityModel;
-        this.broker = broker;
+        this.stmApplicationGenerator = stmApplicationGenerator;
     }
 
     @Override
@@ -46,8 +46,8 @@ public class Taxi extends ComputeNode {
     @Override
     public void processEvent(SimEvent evt) {
         if (evt.getTag() == START_APPLICATION) {
-            application = STMApplicationFactory.create(this);
-            broker.startApplication(application);
+            application = stmApplicationGenerator.create(this);
+            schedule(application, 0, START_APPLICATION);
         }
         if (evt.getTag() == SHUTDOWN) {
             super.shutdownEntity();

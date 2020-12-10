@@ -1,6 +1,6 @@
 package org.cityexperiment.infrastructure;
 
-import org.cityexperiment.application.CCTVApplicationFactory;
+import org.cityexperiment.application.CctvApplicationGenerator;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.power.models.PowerModelHost;
@@ -8,7 +8,6 @@ import org.leaf.application.Application;
 import org.leaf.host.HostFactory;
 import org.leaf.infrastructure.ComputeNode;
 import org.leaf.location.Location;
-import org.leaf.placement.Orchestrator;
 
 import java.util.List;
 
@@ -22,14 +21,14 @@ import static org.leaf.LeafTags.START_APPLICATION;
 public class TrafficLightSystem extends ComputeNode {
 
     private Location location;
-    private Orchestrator broker;
+    private CctvApplicationGenerator cctvApplicationGenerator;
 
     Application application = Application.NULL;
 
-    public TrafficLightSystem(Simulation simulation, Location location, Orchestrator broker) {
+    public TrafficLightSystem(Simulation simulation, Location location, CctvApplicationGenerator cctvApplicationGenerator) {
         super(simulation, List.of(HostFactory.createHost(TLS_MIPS, PowerModelHost.NULL)));
         this.location = location;
-        this.broker = broker;
+        this.cctvApplicationGenerator = cctvApplicationGenerator;
     }
 
     @Override
@@ -41,8 +40,8 @@ public class TrafficLightSystem extends ComputeNode {
     @Override
     public void processEvent(SimEvent evt) {
         if (evt.getTag() == START_APPLICATION) {
-            application = CCTVApplicationFactory.create(this);
-            broker.startApplication(application);
+            application = cctvApplicationGenerator.create(this);
+            schedule(application, 0, START_APPLICATION);
         }
         super.processEvent(evt);
     }

@@ -8,6 +8,7 @@ import org.cloudbus.cloudsim.hosts.Host;
 import org.leaf.application.Application;
 import org.leaf.application.Task;
 import org.leaf.infrastructure.ComputeNode;
+import org.leaf.infrastructure.InfrastructureGraph;
 import org.leaf.placement.Orchestrator;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -27,8 +28,8 @@ public class OrchestratorCity extends Orchestrator {
 
     ComputeNode cloudDc;
 
-    public OrchestratorCity(CloudSim simulation, ComputeNode cloudDc) {
-        super(simulation);
+    public OrchestratorCity(InfrastructureGraph infrastructureGraph, ComputeNode cloudDc) {
+        super(infrastructureGraph);
         this.cloudDc = cloudDc;
     }
 
@@ -56,8 +57,6 @@ public class OrchestratorCity extends Orchestrator {
             return task.getComputeNode();
         }
 
-        InfrastructureGraphCity networkTopology = (InfrastructureGraphCity) getSimulation().getNetworkTopology();
-
         Comparator<Host> comparator;
         if (FOG_SHUTDOWN_DEADLINE < 0) {
             comparator = findLeastUtilizedFogDc();
@@ -65,7 +64,8 @@ public class OrchestratorCity extends Orchestrator {
             comparator = findMaxUtilizedFogDcBelowThreshold();
         }
 
-        List<DatacenterFog> fogDcs = networkTopology.getFogDcs();
+        InfrastructureGraphCity infrastructureGraph = (InfrastructureGraphCity) getInfrastructureGraph();
+        List<DatacenterFog> fogDcs = infrastructureGraph.getFogDcs();
         Optional<Host> optionalHost = fogDcs.stream()
             .map(DatacenterSimple::getHostList)
             .flatMap(List::stream)
@@ -82,7 +82,6 @@ public class OrchestratorCity extends Orchestrator {
             LOGGER.info("No fog nodes available. Placing {} in the cloud.", task);
         }
         return cloudDc;
-
     }
 
     /**

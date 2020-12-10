@@ -6,6 +6,8 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.alg.shortestpath.FloydWarshallShortestPaths;
 import org.jgrapht.graph.DirectedWeightedMultigraph;
+import org.leaf.application.Application;
+import org.leaf.placement.Orchestrator;
 
 /**
  * Infrastructure topology connecting compute nodes with network links in a weighted graph.
@@ -13,6 +15,8 @@ import org.jgrapht.graph.DirectedWeightedMultigraph;
  * The implementation is a bit messy because it complies with the outdated CloudSim NetworkTopology interface.
  */
 public class InfrastructureGraph implements NetworkTopology {
+
+    public static InfrastructureGraph NULL = new InfrastructureGraph() {};
 
     private DirectedWeightedMultigraph<SimEntity, NetworkLink> graph;
 
@@ -53,7 +57,11 @@ public class InfrastructureGraph implements NetworkTopology {
 
     public GraphPath<SimEntity, NetworkLink> getPath(final SimEntity src, final SimEntity dest) {
         DijkstraShortestPath<SimEntity, NetworkLink> algorithm = new DijkstraShortestPath<>(graph);
-        return algorithm.getPath(src, dest);
+        try {
+            return algorithm.getPath(src, dest);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Cannot");
+        }
     }
 
     public DirectedWeightedMultigraph<SimEntity, NetworkLink> getGraph() {

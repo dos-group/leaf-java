@@ -11,6 +11,7 @@ import org.jgrapht.graph.DirectedAcyclicGraph;
 import org.leaf.host.HostLeaf;
 import org.leaf.infrastructure.InfrastructureGraph;
 import org.leaf.infrastructure.NetworkLink;
+import org.leaf.placement.Orchestrator;
 import org.leaf.power.PowerModelApplication;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,21 +34,29 @@ import static org.leaf.LeafTags.*;
 public class Application extends CloudSimEntity implements PowerAware<PowerModelApplication> {
     private static final Logger LOGGER = LoggerFactory.getLogger(Application.class.getSimpleName());
 
-    public static Application NULL = new Application(Simulation.NULL);
+    public static Application NULL = new Application(Simulation.NULL, Orchestrator.NULL);
 
     private DirectedAcyclicGraph<Task, DataFlow> graph = new DirectedAcyclicGraph<>(DataFlow.class);
     private Task lastAddedTask;
     private double lastOutgoingBitRate;
     private boolean running = false;
 
+    private Orchestrator orchestrator = Orchestrator.NULL;
+    private double reallocationInterval = -1;
     private PowerModelApplication powerModel = PowerModelApplication.NULL;
 
+    /** Keeps track of how many resources are allocated by the application on compute nodes and network links */
     private Map<NetworkLink, Double> reservedNetworkMap = new HashMap<>();
     private Map<HostLeaf, Double> reservedCpuMap = new HashMap<>();
 
+    public Application(Simulation simulation, Orchestrator orchestrator) {
+        this(simulation, orchestrator, -1);
+    }
 
-    public Application(Simulation simulation) {
+    public Application(Simulation simulation, Orchestrator orchestrator, double reallocationInterval) {
         super(simulation);
+        this.orchestrator = orchestrator;
+        this.reallocationInterval = reallocationInterval;
         setPowerModel(new PowerModelApplication(this));
     }
 
@@ -58,15 +67,20 @@ public class Application extends CloudSimEntity implements PowerAware<PowerModel
     public void processEvent(SimEvent evt) {
         if (evt.getTag() == START_APPLICATION) {
             if (getSimulation().clock() > SIMULATION_TIME) return;
+            orchestrator.placeApplication(this);
             checkTasksPlaced();
             reserveNetwork();
             reserveCpu();
             running = true;
+            if (this.reallocationInterval > 0) {
+                schedule(this.reallocationInterval, UPDATE_NETWORK_TOPOLOGY);
+            }
         } else if (evt.getTag() == UPDATE_NETWORK_TOPOLOGY) {
             if (getSimulation().clock() > SIMULATION_TIME) return;
+            checkTasksPlaced();
             releaseNetwork();
             reserveNetwork();
-            if (running) schedule(WIFI_REALLOCATION_INTERVAL, UPDATE_NETWORK_TOPOLOGY);
+            // if (running) schedule(this.reallocationInterval, UPDATE_NETWORK_TOPOLOGY);
         } else if (evt.getTag() == STOP_APPLICATION) {
             releaseNetwork();
             releaseCpu();

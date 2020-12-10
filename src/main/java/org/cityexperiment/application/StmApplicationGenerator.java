@@ -6,6 +6,7 @@ import org.cityexperiment.infrastructure.TrafficLightSystem;
 import org.leaf.application.Application;
 import org.leaf.application.Task;
 import org.leaf.location.Location;
+import org.leaf.placement.Orchestrator;
 
 import java.util.HashSet;
 import java.util.List;
@@ -18,17 +19,22 @@ import static org.leaf.LeafTags.UPDATE_NETWORK_TOPOLOGY;
 /**
  * Factory class for constructing STM Applications.
  */
-public class STMApplicationFactory {
+public class StmApplicationGenerator {
 
-    public static Application create(Taxi taxi) {
-        Application application = new Application(taxi.getSimulation())
+    Orchestrator orchestrator;
+
+    public StmApplicationGenerator(Orchestrator orchestrator) {
+        this.orchestrator = orchestrator;
+    }
+
+    public Application create(Taxi taxi) {
+        Application application = new Application(taxi.getSimulation(), orchestrator, WIFI_REALLOCATION_INTERVAL)
             .addSourceTask(sourceTask(taxi), CAR_TO_TRAFFIC_MANAGER_BIT_RATE)
             .addProcessingTask(processingTask(), TRAFFIC_MANAGER_TO_TRAFFIC_LIGHT_BIT_RATE);
         // For each traffic light system a sink task is created
         for (TrafficLightSystem tls : getTrafficLightSystemsOnPath(taxi)) {
             application.addSinkTask(sinkTask(tls));
         }
-        application.schedule(UPDATE_NETWORK_TOPOLOGY);
         return application;
     }
 

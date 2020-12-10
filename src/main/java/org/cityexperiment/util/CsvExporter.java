@@ -46,14 +46,13 @@ public class CsvExporter {
         csvData.add(columnNames);
 
         List<List<PowerMeasurement>> measurementsList = powerMeters.stream().map(PowerMeter::getPowerMeasurements).collect(toList());
-        measurementsList = transpose(measurementsList);
 
         for (int line_index = 0; line_index < SIMULATION_TIME / POWER_MEASUREMENT_INTERVAL; line_index++) {
             String[] line = new String[columnNames.length];
             line[0] = Integer.toString(line_index);
             line[1] = Integer.toString(taxiCountHistory.get(line_index));
             for (int i = 0; i < powerMeters.size(); i++) {
-                PowerMeasurement measurement = measurementsList.get(line_index).get(i);
+                PowerMeasurement measurement = measurementsList.get(i).get(line_index);
                 line[i * types.length + 2] = Double.toString(measurement.getStaticUsage());
                 line[i * types.length + 3] = Double.toString(measurement.getDynamicUsage());
             }
@@ -67,21 +66,5 @@ public class CsvExporter {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    /**
-     * Transposes a 2D-List.
-     */
-    private static <T> List<List<T>> transpose(List<List<T>> table) {
-        List<List<T>> result = new ArrayList<>();
-        final int N = table.get(0).size();
-        for (int i = 0; i < N; i++) {
-            List<T> col = new ArrayList<>();
-            for (List<T> row : table) {
-                col.add(row.get(i));
-            }
-            result.add(col);
-        }
-        return result;
     }
 }

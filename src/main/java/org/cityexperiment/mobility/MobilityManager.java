@@ -55,7 +55,7 @@ public class MobilityManager extends CloudSimEntity {
         InfrastructureGraphCity topology = (InfrastructureGraphCity) getSimulation().getNetworkTopology();
         if (evt.getTag() == CREATE_CARS) {
             for (MobilityModelTaxi mobilityModel : pickNewCarRoutes()) {
-                Taxi taxi = new Taxi(getSimulation(), mobilityModel, city.getBroker());
+                Taxi taxi = new Taxi(getSimulation(), mobilityModel, city.getStmApplicationGenerator());
                 topology.addCar(taxi);
                 schedule(mobilityModel.getEndTime(), DESTROY_CAR, taxi);
             }
