@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Random;
 
 public class Settings {
-    public static final int SEED = 42;
+    public static final int SEED = 0;
     public static final Random RANDOM = new Random(SEED);
     public static final String RESULTS_PATH = "results";
 
@@ -24,7 +24,7 @@ public class Settings {
     public static final double SIMULATION_TIME = 3600 * 24;
     public static final double TIME_STEP_INTERVAL = 1;
     public static final double POWER_MEASUREMENT_INTERVAL = 1;
-    public static final double WIFI_REALLOCATION_INTERVAL = 10;
+    public static final double WIFI_REALLOCATION_INTERVAL = 60;
 
     // City scenario parameters
     public static final int STREETS_PER_AXIS = 4;
@@ -41,26 +41,25 @@ public class Settings {
     // Compute nodes
     public static final long FOG_MIPS = 400000;
     public static final double FOG_STATIC_POWER = 100;
-    public static final double FOG_MAX_POWER = 250;
+    public static final double FOG_MAX_POWER = 240;
     public static final double FOG_UTILIZATION_THRESHOLD = 0.85;
 
     public static final long CLOUD_MIPS = Long.MAX_VALUE;
-    public static final double CLOUD_WATT_PER_MIPS = 722.22e-6;
+    public static final double CLOUD_WATT_PER_MIPS = 700e-6;
 
     public static final long TLS_MIPS = 0;
-    public static final double TLS_WATT_PER_MIPS = 0;
 
     public static final int CAR_MIPS = 0;
-    public static final double CAR_WATT_PER_MIPS = 0;
 
     // Network (Latency is only used for determining shortest paths in the routing)
     public static final double WAN_BANDWIDTH = Long.MAX_VALUE;
-    public static final double WAN_WATT_PER_BIT = 6685e-9;
+    public static final double WAN_WATT_PER_BIT_UP = 6658e-9;
+    public static final double WAN_WATT_PER_BIT_DOWN = 20572e-9;
     public static final double WAN_LATENCY = 100;
 
     public static final double WIFI_BANDWIDTH = 1.6e9;
-    public static final double WIFI_CAR_TO_AP_WATT_PER_BIT = 307e-9;
-    public static final double WIFI_AP_TO_AP_WATT_PER_BIT = 48e-9;
+    public static final double WIFI_CAR_TO_AP_WATT_PER_BIT = 300e-9;
+    public static final double WIFI_AP_TO_AP_WATT_PER_BIT = 100e-9;
     public static final double WIFI_LATENCY = 10;
     public static final double WIFI_RANGE = 300;  // m
 
