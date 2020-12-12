@@ -22,8 +22,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import static org.cityexperiment.Settings.SIMULATION_TIME;
-import static org.cityexperiment.Settings.WIFI_REALLOCATION_INTERVAL;
+import static org.examples.smart_city_traffic.Settings.SIMULATION_TIME;
+import static org.examples.smart_city_traffic.Settings.WIFI_REALLOCATION_INTERVAL;
 import static org.leaf.LeafTags.*;
 
 /**
