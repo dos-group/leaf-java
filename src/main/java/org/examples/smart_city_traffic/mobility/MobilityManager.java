@@ -11,6 +11,7 @@ import org.cloudbus.cloudsim.core.CloudSimEntity;
 import org.cloudbus.cloudsim.core.CloudSimTags;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
+import org.leaf.application.Application;
 import org.leaf.location.Location;
 
 import java.text.SimpleDateFormat;
@@ -67,6 +68,7 @@ public class MobilityManager extends CloudSimEntity {
         } else if (evt.getTag() == UPDATE_NETWORK_TOPOLOGY) {
             InfrastructureGraphCity network = (InfrastructureGraphCity) this.getSimulation().getNetworkTopology();
             network.update();
+            network.getTaxis().stream().map(Taxi::getApplication).forEach(Application::updateNetwork);
             schedule(WIFI_REALLOCATION_INTERVAL, UPDATE_NETWORK_TOPOLOGY);
         } else if (evt.getTag() == COUNT_CARS) {
             taxiCountHistory.add(getCars().size());

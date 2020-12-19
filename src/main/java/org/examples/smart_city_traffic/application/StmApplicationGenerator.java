@@ -27,7 +27,7 @@ public class StmApplicationGenerator {
     }
 
     public Application create(Taxi taxi) {
-        Application application = new Application(taxi.getSimulation(), orchestrator, WIFI_REALLOCATION_INTERVAL)
+        Application application = new Application(taxi.getSimulation(), orchestrator)
             .addSourceTask(sourceTask(taxi), CAR_TO_TRAFFIC_MANAGER_BIT_RATE)
             .addProcessingTask(processingTask(), TRAFFIC_MANAGER_TO_TRAFFIC_LIGHT_BIT_RATE);
         // For each traffic light system a sink task is created

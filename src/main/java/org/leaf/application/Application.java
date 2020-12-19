@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static org.examples.smart_city_traffic.Settings.SIMULATION_TIME;
-import static org.examples.smart_city_traffic.Settings.WIFI_REALLOCATION_INTERVAL;
 import static org.leaf.LeafTags.*;
 
 /**
@@ -42,7 +41,6 @@ public class Application extends CloudSimEntity implements PowerAware<PowerModel
     private boolean running = false;
 
     private Orchestrator orchestrator = Orchestrator.NULL;
-    private double reallocationInterval = -1;
     private PowerModelApplication powerModel = PowerModelApplication.NULL;
 
     /** Keeps track of how many resources are allocated by the application on compute nodes and network links */
@@ -50,13 +48,8 @@ public class Application extends CloudSimEntity implements PowerAware<PowerModel
     private Map<HostLeaf, Double> reservedCpuMap = new HashMap<>();
 
     public Application(Simulation simulation, Orchestrator orchestrator) {
-        this(simulation, orchestrator, -1);
-    }
-
-    public Application(Simulation simulation, Orchestrator orchestrator, double reallocationInterval) {
         super(simulation);
         this.orchestrator = orchestrator;
-        this.reallocationInterval = reallocationInterval;
         setPowerModel(new PowerModelApplication(this));
     }
 
@@ -68,20 +61,10 @@ public class Application extends CloudSimEntity implements PowerAware<PowerModel
         reserveNetwork();
         reserveCpu();
         running = true;
-        if (this.reallocationInterval > 0) {
-            schedule(this.reallocationInterval, UPDATE_NETWORK_TOPOLOGY);
-        }
     }
 
     @Override
-    public void processEvent(SimEvent evt) {
-        if (evt.getTag() == UPDATE_NETWORK_TOPOLOGY) {
-            if (getSimulation().clock() > SIMULATION_TIME) return;
-            checkTasksPlaced();
-            releaseNetwork();
-            reserveNetwork();
-        }
-    }
+    public void processEvent(SimEvent evt) {}
 
     @Override
     public void shutdown() {
@@ -89,6 +72,11 @@ public class Application extends CloudSimEntity implements PowerAware<PowerModel
         releaseCpu();
         running = false;
         super.shutdown();
+    }
+
+    public void updateNetwork() {
+        releaseNetwork();
+        reserveNetwork();
     }
 
     public Application addSourceTask(final Task task, double outgoingBitRate) {
