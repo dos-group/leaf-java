@@ -61,32 +61,34 @@ public class Application extends CloudSimEntity implements PowerAware<PowerModel
     }
 
     @Override
-    protected void startEntity() {}
+    protected void startInternal() {
+        if (getSimulation().clock() > SIMULATION_TIME) return;
+        orchestrator.placeApplication(this);
+        checkTasksPlaced();
+        reserveNetwork();
+        reserveCpu();
+        running = true;
+        if (this.reallocationInterval > 0) {
+            schedule(this.reallocationInterval, UPDATE_NETWORK_TOPOLOGY);
+        }
+    }
 
     @Override
     public void processEvent(SimEvent evt) {
-        if (evt.getTag() == START_APPLICATION) {
-            if (getSimulation().clock() > SIMULATION_TIME) return;
-            orchestrator.placeApplication(this);
-            checkTasksPlaced();
-            reserveNetwork();
-            reserveCpu();
-            running = true;
-            if (this.reallocationInterval > 0) {
-                schedule(this.reallocationInterval, UPDATE_NETWORK_TOPOLOGY);
-            }
-        } else if (evt.getTag() == UPDATE_NETWORK_TOPOLOGY) {
+        if (evt.getTag() == UPDATE_NETWORK_TOPOLOGY) {
             if (getSimulation().clock() > SIMULATION_TIME) return;
             checkTasksPlaced();
             releaseNetwork();
             reserveNetwork();
-            // if (running) schedule(this.reallocationInterval, UPDATE_NETWORK_TOPOLOGY);
-        } else if (evt.getTag() == STOP_APPLICATION) {
-            releaseNetwork();
-            releaseCpu();
-            running = false;
-            shutdownEntity();
         }
+    }
+
+    @Override
+    public void shutdown() {
+        releaseNetwork();
+        releaseCpu();
+        running = false;
+        super.shutdown();
     }
 
     public Application addSourceTask(final Task task, double outgoingBitRate) {

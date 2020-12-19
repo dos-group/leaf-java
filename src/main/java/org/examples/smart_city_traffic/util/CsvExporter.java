@@ -53,8 +53,8 @@ public class CsvExporter {
             line[1] = Integer.toString(taxiCountHistory.get(line_index));
             for (int i = 0; i < powerMeters.size(); i++) {
                 PowerMeasurement measurement = measurementsList.get(i).get(line_index);
-                line[i * types.length + 2] = Double.toString(measurement.getStaticUsage());
-                line[i * types.length + 3] = Double.toString(measurement.getDynamicUsage());
+                line[i * types.length + 2] = Double.toString(measurement.getStaticPower());
+                line[i * types.length + 3] = Double.toString(measurement.getDynamicPower());
             }
             csvData.add(line);
         }

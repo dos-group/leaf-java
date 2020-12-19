@@ -32,7 +32,7 @@ public class PowerChart extends LineChart {
 
         double max = 0;
         for (PowerMeter powerMeter : powerMeters) {
-            double[] measurements = powerMeter.getPowerMeasurements().stream().mapToDouble(PowerMeasurement::getTotalUsage).toArray();
+            double[] measurements = powerMeter.getPowerMeasurements().stream().mapToDouble(PowerMeasurement::getTotalPower).toArray();
             double[] t = Arrays.copyOfRange(timeSteps, 0, measurements.length);
             updateSeries(getChart(), powerMeter.getName(), t, measurements, SeriesMarkers.NONE, Color.BLACK);
             for (double measurement : measurements) {

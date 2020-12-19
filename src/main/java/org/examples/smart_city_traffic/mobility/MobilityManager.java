@@ -44,7 +44,7 @@ public class MobilityManager extends CloudSimEntity {
     }
 
     @Override
-    protected void startEntity() {
+    protected void startInternal() {
         schedule(TIME_STEP_INTERVAL, CREATE_CARS);
         schedule(WIFI_REALLOCATION_INTERVAL, UPDATE_NETWORK_TOPOLOGY);
         schedule(POWER_MEASUREMENT_INTERVAL, COUNT_CARS);
@@ -63,7 +63,7 @@ public class MobilityManager extends CloudSimEntity {
         } else if (evt.getTag() == DESTROY_CAR) {
             Taxi taxi = (Taxi) evt.getData();
             topology.removeCar(taxi);
-            taxi.shutdownEntity();
+            taxi.shutdown();
         } else if (evt.getTag() == UPDATE_NETWORK_TOPOLOGY) {
             InfrastructureGraphCity network = (InfrastructureGraphCity) this.getSimulation().getNetworkTopology();
             network.update();
@@ -72,8 +72,8 @@ public class MobilityManager extends CloudSimEntity {
             taxiCountHistory.add(getCars().size());
             schedule(POWER_MEASUREMENT_INTERVAL, COUNT_CARS);
         } else if (evt.getTag() == CloudSimTags.END_OF_SIMULATION) {
-            shutdownEntity();
-            topology.getTaxis().forEach(Taxi::shutdownEntity);
+            shutdown();
+            topology.getTaxis().forEach(Taxi::shutdown);
         }
 
         // Printing simulation progress: This should go to a separate module

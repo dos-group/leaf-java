@@ -72,7 +72,6 @@ public class Main {
         simulation.terminateAt(SIMULATION_TIME);
         simulation.start();
 
-
         if (RESULTS_PATH != null) {
             System.out.println("Writing results...");
             CsvExporter.write(RESULTS_PATH + "/" + experimentName + "/infrastructure.csv", mm, List.of(cloud, fog, wifi, wanUp, wanDown));

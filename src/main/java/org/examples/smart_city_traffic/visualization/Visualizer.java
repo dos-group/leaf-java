@@ -64,7 +64,7 @@ public class Visualizer extends CloudSimEntity {
     }
 
     @Override
-    protected void startEntity() {
+    protected void startInternal() {
         SwingWrapper<XYChart> swingWrapper = new SwingWrapper<>(charts.stream().map(Chart::getChart).collect(Collectors.toList()));
         simulationResultsFrame = swingWrapper.displayChartMatrix(); // Display charts
         simulationResultsFrame.setDefaultCloseOperation(WindowConstants.HIDE_ON_CLOSE);
