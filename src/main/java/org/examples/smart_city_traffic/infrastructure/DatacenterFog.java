@@ -18,8 +18,7 @@ public class DatacenterFog extends ComputeNode {
     private Location location;
 
     public DatacenterFog(Simulation simulation, Location location, int shutdownDeadline) {
-        super(simulation, List.of(HostFactory.createHost(FOG_MIPS,
-            new PowerModelHostSimple(FOG_MAX_POWER, FOG_STATIC_POWER), shutdownDeadline)));
+        super(simulation, FOG_MIPS, new PowerModelHostSimple(FOG_MAX_POWER, FOG_STATIC_POWER), shutdownDeadline);
         this.location = location;
     }
 

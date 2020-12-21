@@ -6,6 +6,9 @@ import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.core.events.SimEvent;
 import org.cloudbus.cloudsim.datacenters.DatacenterSimple;
 import org.cloudbus.cloudsim.hosts.Host;
+import org.cloudbus.cloudsim.power.models.PowerModelHost;
+import org.cloudbus.cloudsim.resources.PeSimple;
+import org.leaf.host.HostFactory;
 import org.leaf.host.HostLeaf;
 import org.leaf.location.Location;
 import org.leaf.location.LocationAware;
@@ -24,16 +27,16 @@ public class ComputeNode extends DatacenterSimple implements LocationAware {
      * A property that implements the Null Object Design Pattern for {@link ComputeNode}
      * objects.
      */
-    public static ComputeNode NULL = new ComputeNode(Simulation.NULL, new ArrayList<>()) {};
+    public static ComputeNode NULL = new ComputeNode(Simulation.NULL) {};
 
     private Location location = Location.NULL;
 
-    public ComputeNode(Simulation simulation, List<HostLeaf> hostList, VmAllocationPolicy vmAllocationPolicy) {
-        super(simulation, hostList, vmAllocationPolicy);
+    public ComputeNode(Simulation simulation) {
+        super(simulation, List.of(HostFactory.createHost(0, PowerModelHost.NULL, -1)), new VmAllocationPolicySimple());
     }
 
-    public ComputeNode(Simulation simulation, List<HostLeaf> hostList) {
-        this(simulation, hostList, new VmAllocationPolicySimple());
+    public ComputeNode(Simulation simulation, long mips, PowerModelHost powerModel, int shutdownDeadline) {
+        super(simulation, List.of(HostFactory.createHost(mips, powerModel, shutdownDeadline)), new VmAllocationPolicySimple());
     }
 
     @Override

@@ -25,7 +25,7 @@ public class Taxi extends ComputeNode {
     Application application = Application.NULL;
 
     public Taxi(Simulation simulation, MobilityModelTaxi mobilityModel, StmApplicationGenerator stmApplicationGenerator) {
-        super(simulation, List.of(HostFactory.createHost(CAR_MIPS, PowerModelHost.NULL)));
+        super(simulation, CAR_MIPS, PowerModelHost.NULL, -1);
         this.startTime = getSimulation().clock();
         this.mobilityModel = mobilityModel;
         this.stmApplicationGenerator = stmApplicationGenerator;

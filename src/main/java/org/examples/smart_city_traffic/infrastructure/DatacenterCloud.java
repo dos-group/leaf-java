@@ -17,7 +17,7 @@ import static org.examples.smart_city_traffic.Settings.CLOUD_WATT_PER_MIPS;
 public class DatacenterCloud extends ComputeNode {
 
     public DatacenterCloud(Simulation simulation) {
-        super(simulation, List.of(HostFactory.createHost(CLOUD_MIPS, new PowerModelHostShared(CLOUD_WATT_PER_MIPS))));
+        super(simulation, CLOUD_MIPS, new PowerModelHostShared(CLOUD_WATT_PER_MIPS), -1);
     }
 
     @Override

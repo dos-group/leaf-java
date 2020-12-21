@@ -5,7 +5,6 @@ import org.examples.smart_city_traffic.infrastructure.InfrastructureGraphCity;
 import org.examples.smart_city_traffic.infrastructure.TrafficLightSystem;
 import org.leaf.application.Application;
 import org.leaf.application.Task;
-import org.leaf.infrastructure.ComputeNode;
 import org.leaf.placement.Orchestrator;
 
 import java.util.List;
@@ -32,21 +31,9 @@ public class CctvApplicationGenerator {
         DatacenterCloud cloud = clouds.get(0);
 
         return new Application(trafficLightSystem.getSimulation(), orchestrator)
-            .addSourceTask(sourceTask(trafficLightSystem), CCTV_TO_PROCESSOR_BIT_RATE)
-            .addProcessingTask(processingTask(), IMAGE_ANALYSIS_TO_STORAGE_BIT_RATE)
-            .addSinkTask(sinkTask(cloud));
-    }
-
-    private static Task sourceTask(TrafficLightSystem trafficLightSystem) {
-        return new Task(CCTV_OPERATOR_MIPS, trafficLightSystem);
-    }
-
-    private static Task processingTask() {
-        return new Task(IMAGE_ANALYSIS_OPERATOR_MIPS);
-    }
-
-    private static Task sinkTask(ComputeNode cloud) {
-        return new Task(STORAGE_OPERATOR_MIPS, cloud);
+            .addSourceTask(new Task(CCTV_OPERATOR_MIPS), CCTV_TO_PROCESSOR_BIT_RATE, trafficLightSystem)
+            .addProcessingTask(new Task(IMAGE_ANALYSIS_OPERATOR_MIPS), IMAGE_ANALYSIS_TO_STORAGE_BIT_RATE)
+            .addSinkTask(new Task(STORAGE_OPERATOR_MIPS), cloud);
     }
 
 }

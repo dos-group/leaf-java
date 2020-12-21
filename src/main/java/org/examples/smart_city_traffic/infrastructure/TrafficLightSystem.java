@@ -23,7 +23,7 @@ public class TrafficLightSystem extends ComputeNode {
     Application application = Application.NULL;
 
     public TrafficLightSystem(Simulation simulation, Location location, CctvApplicationGenerator cctvApplicationGenerator) {
-        super(simulation, List.of(HostFactory.createHost(TLS_MIPS, PowerModelHost.NULL)));
+        super(simulation, TLS_MIPS, PowerModelHost.NULL, -1);
         this.location = location;
         this.cctvApplicationGenerator = cctvApplicationGenerator;
         this.application = cctvApplicationGenerator.create(this);

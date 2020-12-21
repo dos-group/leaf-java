@@ -2,6 +2,7 @@ package org.leaf.host;
 
 import org.cloudbus.cloudsim.hosts.HostSimple;
 import org.cloudbus.cloudsim.resources.Pe;
+import org.cloudbus.cloudsim.resources.PeSimple;
 import org.leaf.infrastructure.ComputeNode;
 
 import java.util.List;
@@ -14,6 +15,10 @@ import static java.lang.String.format;
 public class HostLeaf extends HostSimple {
 
     private double usedMips;
+
+    public HostLeaf(long mips) {
+        this(0, 0, 0, List.of(new PeSimple(mips)));
+    }
 
     public HostLeaf(long ram, long bw, long storage, List<Pe> peList) {
         super(ram, bw, storage, peList);

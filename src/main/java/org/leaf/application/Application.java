@@ -9,6 +9,7 @@ import org.cloudbus.cloudsim.power.PowerAware;
 import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DirectedAcyclicGraph;
 import org.leaf.host.HostLeaf;
+import org.leaf.infrastructure.ComputeNode;
 import org.leaf.infrastructure.InfrastructureGraph;
 import org.leaf.infrastructure.NetworkLink;
 import org.leaf.placement.Orchestrator;
@@ -79,10 +80,12 @@ public class Application extends CloudSimEntity implements PowerAware<PowerModel
         reserveNetwork();
     }
 
-    public Application addSourceTask(final Task task, double outgoingBitRate) {
+    public Application addSourceTask(final Task task, double outgoingBitRate, ComputeNode computeNode) {
         if (lastAddedTask != null) {
             throw new IllegalStateException("Pipeline already has a source. " + graph);
         }
+        task.setBound(true);
+        task.setComputeNode(computeNode);
         graph.addVertex(task);
         lastAddedTask = task;
         lastOutgoingBitRate = outgoingBitRate;
@@ -102,10 +105,12 @@ public class Application extends CloudSimEntity implements PowerAware<PowerModel
         return this;
     }
 
-    public Application addSinkTask(final Task task) {
+    public Application addSinkTask(final Task task, ComputeNode computeNode) {
         if (lastAddedTask == null) {
             throw new IllegalStateException("Pipeline has no source task, call setSourceTask() first.");
         }
+        task.setBound(true);
+        task.setComputeNode(computeNode);
         graph.addVertex(task);
         graph.addEdge(lastAddedTask, task, new DataFlow(lastOutgoingBitRate));
         return this;

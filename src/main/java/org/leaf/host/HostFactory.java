@@ -29,7 +29,7 @@ public class HostFactory {
             factory = new HostFactory();
         HostLeaf host = new HostLeaf(RAM, BW, STORAGE, List.of(new PeSimple(mips)));
         host.setId(factory.getNextHostId());
-        host.setVmScheduler(new VmSchedulerTimeShared());  // Allows the allocation of multiple VMs to a single
+        host.setVmScheduler(new VmSchedulerTimeShared());  // Allows the allocation of multiple VMs to a single host
         host.setPowerModel(powerModel);
         if (shutdownDeadline >= 0) {
             host.setActive(false);

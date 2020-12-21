@@ -16,12 +16,6 @@ public class Task {
         this.requestedMips = requestedMips;
     }
 
-    public Task(long requestedMips, ComputeNode boundComputeNode) {
-        this.requestedMips = requestedMips;
-        this.computeNode = boundComputeNode;
-        this.bound = true;
-    }
-
     public long getRequestedMips() {
         return requestedMips;
     }
@@ -36,6 +30,10 @@ public class Task {
 
     public Host getHost() {
         return computeNode.getHostList().stream().findFirst().orElse(Host.NULL);
+    }
+
+    public void setBound(boolean bound) {
+        this.bound = bound;
     }
 
     public boolean isBound() {
