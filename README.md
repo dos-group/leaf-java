@@ -16,11 +16,15 @@ Features include:
 </p>
 
 
-### Implementation
+## Core
 
 The package `org.leaf` contains the infrastructure and application model as well as related power models.
 
-The current implementation depends on a patched version of CloudSim Plus which can be found [here](https://github.com/birnbaum/cloudsim-plus/pull/1).
+The current implementation is based on [CloudSim Plus](https://github.com/manoelcampos/cloudsim-plus),
+a modern and fully documented simulation framework.
+Several features and improvements developed within LEAF were directly contributed to the CloudSim Plus core and
+released in [version 6](https://github.com/manoelcampos/cloudsim-plus/releases/tag/v6.0.0).
+
 Infrastructure and application graphs are implemented through [JGraphT](https://jgrapht.org/).
 
 
@@ -43,7 +47,7 @@ Experiments can be configured via the `Settings` class.
 To improve simulation speed increase the `LOG_LEVEL` and reduce the `VISUALIZATION_REDRAW_INTERVAL`.
 
 
-#### Analysis
+### Analysis
 The directory `analysis` contains the experiment analysis code written in Python.
 For running the analysis yourself, [install conda](https://docs.conda.io/projects/conda/en/latest/user-guide/install/) adapt `settings.py` and run:
 
@@ -53,3 +57,8 @@ conda env create
 conda activate leaf_analysis
 python create_plots.py
 ```
+
+## Publications
+
+The paper behind LEAF is currently under review:
+- Philipp Wiesner and Lauritz Thamsen. "LEAF: Simulating Large Energy-Aware Fog Computing Environments" [under review]

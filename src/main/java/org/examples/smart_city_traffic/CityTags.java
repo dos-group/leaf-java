@@ -14,10 +14,20 @@ public class CityTags {
      */
     public static final int BASE = 20000;
 
+    /**
+     * Update events
+     */
     public static final int CREATE_CARS = BASE + 101;
     public static final int DESTROY_CAR = BASE + 102;
 
+    /**
+     * Read events
+     */
     public static final int COUNT_CARS = BASE + 103;
+
+    /**
+     * Visualization events
+     */
     public static final int REPAINT_CHARTS = BASE + 300;
 
     /**

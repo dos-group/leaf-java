@@ -15,6 +15,9 @@ public class LeafTags {
      */
     public static final int BASE = 10000;
 
+    /**
+     * Update events
+     */
     public static final int UPDATE_NETWORK_TOPOLOGY = BASE + 1;
     public static final int SHUTDOWN_FOG_NODE = BASE + 2;
 
