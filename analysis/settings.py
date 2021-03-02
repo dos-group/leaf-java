@@ -12,5 +12,5 @@ COLORS = {
     "wan": '#3498db',
     "wifi": '#2ecc71',
     "cctv": '#0c6f68',
-    "stm": '#c9bc02',
+    "v2i": '#c9bc02',
 }

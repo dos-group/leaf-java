@@ -59,7 +59,7 @@ def create_barplot(results: ExperimentResults):
     fig.add_trace(go.Bar(name='Fog static', x=EXPERIMENT_TITLES, y=fog_static, marker_color=COLORS["fog_static"]))
     fig.add_trace(go.Bar(name='Fog dynamic', x=EXPERIMENT_TITLES, y=fog_dynamic, marker_color=COLORS["fog"]))
     fig.add_trace(go.Bar(name='Cloud', x=EXPERIMENT_TITLES, y=cloud, marker_color=COLORS["cloud"]))
-    fig.add_trace(go.Bar(name='WiFi', x=EXPERIMENT_TITLES, y=wifi, marker_color=COLORS["wifi"]))
+    fig.add_trace(go.Bar(name='Wi-Fi', x=EXPERIMENT_TITLES, y=wifi, marker_color=COLORS["wifi"]))
     fig.add_trace(go.Bar(name='WAN', x=EXPERIMENT_TITLES, y=wan, marker_color=COLORS["wan"],
                          text=total, texttemplate='%{text:.2f}', textposition='outside'))
     fig.write_image(os.path.join(RESULTS_DIR, "barplot.pdf"))
@@ -68,11 +68,11 @@ def create_barplot(results: ExperimentResults):
 def create_infrastructure_subplot(results: ExperimentResults):
     fig = subplot_figure()
     for i, (_, (df, _)) in enumerate(results.items(), 1):
+        fig.add_trace(go.Scatter(x=df.index, y=df["wanUp dynamic"]+df["wanDown dynamic"], name="WAN", line=dict(width=1, color=COLORS["wan"]), showlegend=(i == 1)), row=1, col=i)
+        fig.add_trace(go.Scatter(x=df.index, y=df["wifi dynamic"], name="Wi-Fi", line=dict(width=1, color=COLORS["wifi"]), showlegend=(i == 1)), row=1, col=i)
         fig.add_trace(go.Scatter(x=df.index, y=df["cloud dynamic"], name="Cloud", line=dict(width=1, color=COLORS["cloud"]), showlegend=(i == 1)), row=1, col=i)
         fig.add_trace(go.Scatter(x=df.index, y=df["fog static"] + df["fog dynamic"], name="Fog", line=dict(width=1, color=COLORS["fog"]), showlegend=(i == 1)), row=1, col=i)
         fig.add_trace(go.Scatter(x=df.index, y=df["fog static"], name="Fog static", line=dict(width=1, dash="1px,2px", color=COLORS["fog"]), showlegend=(i == 1)), row=1, col=i)
-        fig.add_trace(go.Scatter(x=df.index, y=df["wanUp dynamic"]+df["wanDown dynamic"], name="WAN (up+down)", line=dict(width=1, color=COLORS["wan"]), showlegend=(i == 1)), row=1, col=i)
-        fig.add_trace(go.Scatter(x=df.index, y=df["wifi dynamic"], name="WiFi", line=dict(width=1, color=COLORS["wifi"]), showlegend=(i == 1)), row=1, col=i)
     fig.write_image(os.path.join(RESULTS_DIR, "infrastructure.pdf"))
 
 
@@ -80,19 +80,19 @@ def create_applications_subplot(results: ExperimentResults):
     fig = subplot_figure()
     for i, (_, (_, df)) in enumerate(results.items(), 1):
         fig.add_trace(go.Scatter(x=df.index, y=df["cctv static"] + df["cctv dynamic"], name="CCTV", line=dict(width=1, color=COLORS["cctv"]), showlegend=(i == 1)), row=1, col=i)
-        fig.add_trace(go.Scatter(x=df.index, y=df["stm static"] + df["stm dynamic"], name="STM", line=dict(width=1, color=COLORS["stm"]), showlegend=(i == 1)), row=1, col=i)
+        fig.add_trace(go.Scatter(x=df.index, y=df["v2i static"] + df["v2i dynamic"], name="V2I", line=dict(width=1, color=COLORS["v2i"]), showlegend=(i == 1)), row=1, col=i)
     fig.write_image(os.path.join(RESULTS_DIR, "applications.pdf"))
 
 
 def create_infrastructure_plots(results: ExperimentResults):
     for result, (df, _) in results.items():
         fig = single_experiment_figure()
+        fig.add_trace(go.Scatter(x=df.index, y=df["wanUp dynamic"] + df["wanDown dynamic"], name="WAN", line=dict(width=1, color=COLORS["wan"])))
+        fig.add_trace(go.Scatter(x=df.index, y=df["wifi dynamic"], name="Wi-Fi", line=dict(width=1, color=COLORS["wifi"])))
         fig.add_trace(go.Scatter(x=df.index, y=df["cloud dynamic"], name="Cloud", line=dict(width=1, color=COLORS["cloud"])))
         if (df["fog static"] + df["fog dynamic"]).sum() > 0:
             fig.add_trace(go.Scatter(x=df.index, y=df["fog static"] + df["fog dynamic"], name="Fog", line=dict(width=1, color=COLORS["fog"])))
             fig.add_trace(go.Scatter(x=df.index, y=df["fog static"], name="Fog static", line=dict(width=1, dash="dot", color=COLORS["fog"])))
-        fig.add_trace(go.Scatter(x=df.index, y=df["wanUp dynamic"] + df["wanDown dynamic"], name="WAN", line=dict(width=1, color=COLORS["wan"])))
-        fig.add_trace(go.Scatter(x=df.index, y=df["wifi dynamic"], name="WiFi", line=dict(width=1, color=COLORS["wifi"])))
         os.makedirs(os.path.join(RESULTS_DIR, result), exist_ok=True)
         fig.write_image(os.path.join(RESULTS_DIR, result, "infrastructure.pdf"))
 
@@ -101,7 +101,7 @@ def create_applications_plots(results: ExperimentResults):
     for result, (_, df) in results.items():
         fig = single_experiment_figure()
         fig.add_trace(go.Scatter(x=df.index, y=df["cctv static"] + df["cctv dynamic"], name="CCTV", line=dict(width=1, color=COLORS["cctv"])))
-        fig.add_trace(go.Scatter(x=df.index, y=df["stm static"] + df["stm dynamic"], name="STM", line=dict(width=1, color=COLORS["stm"])))
+        fig.add_trace(go.Scatter(x=df.index, y=df["v2i static"] + df["v2i dynamic"], name="V2I", line=dict(width=1, color=COLORS["v2i"])))
         os.makedirs(os.path.join(RESULTS_DIR, result), exist_ok=True)
         fig.write_image(os.path.join(RESULTS_DIR, result, "applications.pdf"))
 
