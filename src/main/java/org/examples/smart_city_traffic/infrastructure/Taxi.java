@@ -1,39 +1,36 @@
 package org.examples.smart_city_traffic.infrastructure;
 
-import org.examples.smart_city_traffic.application.StmApplicationGenerator;
+import org.examples.smart_city_traffic.application.V2iApplicationGenerator;
 import org.examples.smart_city_traffic.mobility.MobilityModelTaxi;
 import org.cloudbus.cloudsim.core.Simulation;
 import org.cloudbus.cloudsim.power.models.PowerModelHost;
 import org.leaf.application.Application;
-import org.leaf.host.HostFactory;
 import org.leaf.infrastructure.ComputeNode;
 import org.leaf.location.Location;
-
-import java.util.List;
 
 import static org.examples.smart_city_traffic.Settings.CAR_MIPS;
 
 /**
- * A taxi which features a mobility model and hosts a STM application.
+ * A taxi which features a mobility model and hosts a V2I application.
  */
 public class Taxi extends ComputeNode {
 
     private double startTime;
     private MobilityModelTaxi mobilityModel;
-    private StmApplicationGenerator stmApplicationGenerator;
+    private V2iApplicationGenerator v2iApplicationGenerator;
 
     Application application = Application.NULL;
 
-    public Taxi(Simulation simulation, MobilityModelTaxi mobilityModel, StmApplicationGenerator stmApplicationGenerator) {
+    public Taxi(Simulation simulation, MobilityModelTaxi mobilityModel, V2iApplicationGenerator v2iApplicationGenerator) {
         super(simulation, CAR_MIPS, PowerModelHost.NULL, -1);
         this.startTime = getSimulation().clock();
         this.mobilityModel = mobilityModel;
-        this.stmApplicationGenerator = stmApplicationGenerator;
+        this.v2iApplicationGenerator = v2iApplicationGenerator;
     }
 
     @Override
     protected void startInternal() {
-        application = stmApplicationGenerator.create(this);
+        application = v2iApplicationGenerator.create(this);
         // Don't call super.startEntity(), the DATACENTER_REGISTRATION_REQUEST event will cause a memory leak
     }
 

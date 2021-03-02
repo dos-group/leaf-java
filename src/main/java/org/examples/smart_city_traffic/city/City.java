@@ -1,7 +1,7 @@
 package org.examples.smart_city_traffic.city;
 
 import org.examples.smart_city_traffic.application.CctvApplicationGenerator;
-import org.examples.smart_city_traffic.application.StmApplicationGenerator;
+import org.examples.smart_city_traffic.application.V2iApplicationGenerator;
 import org.examples.smart_city_traffic.infrastructure.DatacenterCloud;
 import org.examples.smart_city_traffic.infrastructure.DatacenterFog;
 import org.examples.smart_city_traffic.infrastructure.InfrastructureGraphCity;
@@ -29,15 +29,13 @@ public class City {
     private double width;
     private double height;
     private int streetsPerAxis;
+    private Graph<Location, Street> streetGraph;
 
     private DatacenterCloud cloudDc;
-    private Graph<Location, Street> streetGraph;
     private InfrastructureGraphCity infrastructureGraph;
-
     private Orchestrator orchestrator;
-
     private CctvApplicationGenerator cctvApplicationGenerator;
-    private StmApplicationGenerator stmApplicationGenerator;
+    private V2iApplicationGenerator v2iApplicationGenerator;
 
     private List<Location> gateLocations = new ArrayList<>();   // Gates are entry/exit points for taxis
     private List<Location> trafficLightLocations = new ArrayList<>();
@@ -52,7 +50,7 @@ public class City {
         this.infrastructureGraph = new InfrastructureGraphCity();
         this.orchestrator = new OrchestratorCity(this.infrastructureGraph, this.cloudDc);
         this.cctvApplicationGenerator = new CctvApplicationGenerator(this.orchestrator);
-        this.stmApplicationGenerator = new StmApplicationGenerator(this.orchestrator);
+        this.v2iApplicationGenerator = new V2iApplicationGenerator(this.orchestrator);
 
         initInfrastructureGraph(simulation, numFogDcs);
     }
@@ -153,8 +151,8 @@ public class City {
         return cctvApplicationGenerator;
     }
 
-    public StmApplicationGenerator getStmApplicationGenerator() {
-        return stmApplicationGenerator;
+    public V2iApplicationGenerator getV2iApplicationGenerator() {
+        return v2iApplicationGenerator;
     }
 
     /**

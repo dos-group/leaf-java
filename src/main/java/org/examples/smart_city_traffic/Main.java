@@ -55,7 +55,7 @@ public class Main {
         PowerMeter wanUp = new PowerMeter(simulation, nt::getWanUpLinks).setName("wanUp");
         PowerMeter wanDown = new PowerMeter(simulation, nt::getWanDownLinks).setName("wanDown");
         PowerMeter cctvApp = new PowerMeter(simulation, () -> nt.getTraficLightSystems().stream().map(TrafficLightSystem::getApplication).collect(toList())).setName("cctv");
-        PowerMeter stmApp = new PowerMeter(simulation, () -> nt.getTaxis().stream().map(Taxi::getApplication).collect(toList())).setName("stm");
+        PowerMeter v2iApp = new PowerMeter(simulation, () -> nt.getTaxis().stream().map(Taxi::getApplication).collect(toList())).setName("v2i");
 
         cloud.setMeasurementInterval(POWER_MEASUREMENT_INTERVAL);
         fog.setMeasurementInterval(POWER_MEASUREMENT_INTERVAL);
@@ -63,10 +63,10 @@ public class Main {
         wanUp.setMeasurementInterval(POWER_MEASUREMENT_INTERVAL);
         wanDown.setMeasurementInterval(POWER_MEASUREMENT_INTERVAL);
         cctvApp.setMeasurementInterval(POWER_MEASUREMENT_INTERVAL);
-        stmApp.setMeasurementInterval(POWER_MEASUREMENT_INTERVAL);
+        v2iApp.setMeasurementInterval(POWER_MEASUREMENT_INTERVAL);
 
         if (VISUALIZATION_REDRAW_INTERVAL > 0) {
-            new Visualizer(experimentName, simulation, city, mm, List.of(cloud, fog, wifi, wanUp, wanDown), List.of(cctvApp, stmApp), TIME_STEP_INTERVAL, SIMULATION_TIME);
+            new Visualizer(experimentName, simulation, city, mm, List.of(cloud, fog, wifi, wanUp, wanDown), List.of(cctvApp, v2iApp), TIME_STEP_INTERVAL, SIMULATION_TIME);
         }
 
         simulation.terminateAt(SIMULATION_TIME);
@@ -75,7 +75,7 @@ public class Main {
         if (RESULTS_PATH != null) {
             System.out.println("Writing results...");
             CsvExporter.write(RESULTS_PATH + "/" + experimentName + "/infrastructure.csv", mm, List.of(cloud, fog, wifi, wanUp, wanDown));
-            CsvExporter.write(RESULTS_PATH + "/" + experimentName + "/applications.csv", mm, List.of(cctvApp, stmApp));
+            CsvExporter.write(RESULTS_PATH + "/" + experimentName + "/applications.csv", mm, List.of(cctvApp, v2iApp));
         }
 
         System.out.println("Experiment " + experimentName + " finished!");

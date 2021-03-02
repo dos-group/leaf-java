@@ -60,7 +60,7 @@ public class InfrastructureGraph implements NetworkTopology {
         try {
             return algorithm.getPath(src, dest);
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("Cannot");
+            throw new IllegalArgumentException("Cannot find path.");
         }
     }
 

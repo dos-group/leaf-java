@@ -16,13 +16,13 @@ import java.util.stream.Collectors;
 import static org.examples.smart_city_traffic.Settings.*;
 
 /**
- * Factory class for constructing STM Applications.
+ * Factory class for constructing V2I Applications.
  */
-public class StmApplicationGenerator {
+public class V2iApplicationGenerator {
 
     Orchestrator orchestrator;
 
-    public StmApplicationGenerator(Orchestrator orchestrator) {
+    public V2iApplicationGenerator(Orchestrator orchestrator) {
         this.orchestrator = orchestrator;
     }
 
