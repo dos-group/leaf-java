@@ -16,6 +16,16 @@ Features include:
 </p>
 
 
+## Python Implementation
+
+We created a new, lightweight implementation of LEAF in Python.
+Although the Python version is currently less performant, we hope the cleaner interface, improved usability, 
+and bigger third party library support - especially for machine learning - will lead to a greater adoption of our model.
+
+You can find the new implementation [here](https://github.com/dos-group/leaf) and its documentation [here](https://leaf.readthedocs.io/en/latest/).
+
+
+
 ## Core
 
 The package `org.leaf` contains the infrastructure and application model as well as related power models.
@@ -60,5 +70,5 @@ python create_plots.py
 
 ## Publications
 
-The paper behind LEAF is currently under review:
-- Philipp Wiesner and Lauritz Thamsen. "LEAF: Simulating Large Energy-Aware Fog Computing Environments" [under review]
+The paper behind LEAF is accepted for publication:
+- Philipp Wiesner and Lauritz Thamsen. "[LEAF: Simulating Large Energy-Aware Fog Computing Environments](https://arxiv.org/abs/2103.01170)" To appear in the Proceedings of the 2021 *5th IEEE International Conference on Fog and Edge Computing (ICFEC)*, IEEE, 2021.
